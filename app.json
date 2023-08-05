@@ -10,7 +10,7 @@
       "image": "./assets/tequaly.png",
       "resizeMode": "contain",
       "backgroundColor": "#fff",
-      "":""
+      "": ""
     },
     "assetBundlePatterns": [
       "**/*"
