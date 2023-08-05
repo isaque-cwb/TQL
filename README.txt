@@ -1,0 +1,2 @@
+- criar componente Button próprio
+- adicionar ignore do warning 
