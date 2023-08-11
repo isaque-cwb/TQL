@@ -10,7 +10,7 @@ export function StackRoutes() {
     return (
 
         <Navigator initialRouteName='signin' >
-            <Screen name='home' component={Home} />
+            <Screen name='home' component={Home} options={{ headerShown: false }} />
             <Screen name='signin' component={SignIn} options={{ headerShown: false }} />
         </Navigator>
     )

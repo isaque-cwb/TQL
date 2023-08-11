@@ -35,8 +35,8 @@ export function SignIn() {
 
 
 
-      <Logo width={300} />
-      <Stack space={4} margin={3} width={300} >
+      <Logo width={350} />
+      <Stack space={4} margin={3} width={350} >
         <Stack alignItems={'center'} >
 
           <Text fontFamily={'heading'} fontSize={30} color={'purple.300'} >
@@ -48,11 +48,13 @@ export function SignIn() {
           placeholder='Digite seu Usuário'
           onChangeText={setUser}
           value={user}
+          fontSize={18}
         />
         <NBInput
           placeholder='Digite sua Senha'
           onChangeText={setPassword}
           value={password}
+          fontSize={18}
         />
 
         <Button

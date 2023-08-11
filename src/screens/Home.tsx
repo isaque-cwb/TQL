@@ -5,11 +5,14 @@ import { Alert, Button, StyleSheet, Text, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { TextInput } from 'react-native-paper';
 import { TextInputMask } from 'react-native-masked-text';
-import { Center } from 'native-base';
+import { Center, useTheme } from 'native-base';
+import { Input as NBInput } from '../components/Input'
+import { Header } from '../components/Header';
 
 
 export function Home() {
-  const [value, setValue] = useState('');
+  const [pvCli, setPvCli] = useState('');
+  const [cc, setCc] = useState('');
   const [colaborador, setColaborador] = useState('')
   const [isFocus, setIsFocus] = useState(false);
   const [time, setTime] = useState('');
@@ -18,10 +21,12 @@ export function Home() {
   const [isValidHour, setIsValidHour] = useState(true);
   const refInputHours = useRef(null)
 
+  const { colors } = useTheme()
+
 
   const handleBlur = () => {
     // Verifica se o valor inserido está no formato "hh:mm"
-    const timeRegex = /^([01]?[0-9]|2[0-3]):([0-5]?[0-9])$/;
+    const timeRegex = /^([01]?[0-9]|2[0-4]):([0-5]?[0-9])$/;
 
     if (time) {
       if (!timeRegex.test(time)) {
@@ -33,9 +38,9 @@ export function Home() {
         const hoursInt = parseInt(hours, 10);
         const minutesInt = parseInt(minutes, 10);
 
-        if (hoursInt >= 12 && minutesInt > 0) {
+        if (hoursInt >= 24 && minutesInt > 0) {
           setTime('');
-          Alert.alert('Erro na quantidade de horas', 'Informe até no máximo 12 horas.');
+          Alert.alert('Erro na quantidade de horas', 'Informe até no máximo 24 horas.');
           setIsValidHour(false)
         }
         setIsValidHour(true)
@@ -63,8 +68,8 @@ export function Home() {
 
   const data = [
     { label: '', value: '' },
-    { label: 'PV-100138 - Irani', value: '1' },
-    { label: 'PV-200236 - Klabin', value: '2' },
+    { label: 'PV-101328 - Irani', value: '1' },
+    { label: 'PV-101326 - Klabin', value: '2' },
     { label: 'Item 3', value: '3' },
     { label: 'Item 4', value: '4' },
     { label: 'Item 5', value: '5' },
@@ -76,44 +81,23 @@ export function Home() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Page Home</Text>
+      <Header title={' APONTAMENTO'} />
       <View  >
-        <TextInput
-          style={styles.input}
-          label={'Colaborador'}
-          mode='outlined'
+        <Text style={styles.labelColabora}>Colaborador</Text>
+        <NBInput
+          fontSize={18}
+          borderColor={'gray.300'}
+
+          width={350}
+          placeholder='Colaborador'
           onChangeText={setColaborador}
           value={colaborador}
-        />
-      </View>
-      <View >
-        <Text style={styles.labelDrop}>PV/Cliente</Text>
+          editable={false}
 
-        <Dropdown
-          style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          inputSearchStyle={styles.inputSearchStyle}
-          iconStyle={styles.iconStyle}
-          data={data}
-          search
-          maxHeight={200}
-          labelField="label"
-          valueField="value"
-          placeholder={!isFocus ? 'Select item...' : '...'}
-          searchPlaceholder="Search..."
-          value={value === '' ? 'Select item...' : value}
-          onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(false)}
-          onChange={item => {
-            setValue(item.value);
-            setIsFocus(false);
-          }}
-          renderLeftIcon={() => (
-            null// for render icon ...
-          )}
         />
+
       </View>
+
 
       <View style={styles.containerInputHour}>
         <Text style={{ fontSize: 18 }} >Informe Qtd de Horas: </Text>
@@ -148,6 +132,63 @@ export function Home() {
         />
       </View>
 
+      <View >
+        <Text style={styles.labelDrop}>PV/Cliente</Text>
+
+        <Dropdown
+          style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          iconStyle={styles.iconStyle}
+          data={data}
+          search
+          maxHeight={200}
+          labelField="label"
+          valueField="value"
+          placeholder={!isFocus ? 'Select item...' : '...'}
+          searchPlaceholder="Search..."
+          value={pvCli === '' ? 'Select item...' : pvCli}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
+          onChange={item => {
+            setPvCli(item.value);
+            setIsFocus(false);
+          }}
+          renderLeftIcon={() => (
+            null// for render icon ...
+          )}
+        />
+      </View>
+
+      <View >
+        <Text style={styles.labelDrop}>Centro de Custo</Text>
+        <Dropdown
+          style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          iconStyle={styles.iconStyle}
+          data={data}
+          search
+          maxHeight={200}
+          labelField="label"
+          valueField="value"
+          placeholder={!isFocus ? 'Select item...' : '...'}
+          searchPlaceholder="Search..."
+          value={cc === '' ? 'Select item...' : cc}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
+          onChange={item => {
+            setCc(item.value);
+            setIsFocus(false);
+          }}
+          renderLeftIcon={() => (
+            null// for render icon ...
+          )}
+        />
+      </View>
+
     </View >
   );
 }
@@ -155,14 +196,15 @@ export function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    gap: 25,
+    gap: 35,
     backgroundColor: '#fff',
     alignItems: 'center',
-    paddingTop: 50
+    paddingTop: 50,
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    marginTop: 80
   },
   button: {
     width: 300,
@@ -174,11 +216,11 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     height: 50,
-    borderColor: 'gray',
+    borderColor: 'g',
     borderWidth: 0.5,
     borderRadius: 5,
     paddingHorizontal: 8,
-    width: 300
+    width: 350
   },
   icon: {
     marginRight: 5,
@@ -217,24 +259,14 @@ const styles = StyleSheet.create({
     marginVertical: 3,
 
   },
-  containerDatePicker: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    padding: 5,
-    borderRadius: 5,
-    width: 300,
-    justifyContent: 'space-between',
 
-
-  },
   containerInputHour: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
     padding: 5,
     borderRadius: 5,
-    width: 300,
+    width: 350,
     justifyContent: 'space-between',
     marginVertical: 5,
     marginTop: 12
@@ -245,7 +277,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 5,
     borderRadius: 5,
-    width: 300,
+    width: 350,
     justifyContent: 'space-between',
     marginVertical: 5,
   },
@@ -271,6 +303,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     textAlign: 'center',
     backgroundColor: '#fff'
+  },
+  labelColabora: {
+    fontSize: 20,
+
+
   },
 
 });
