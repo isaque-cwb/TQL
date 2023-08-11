@@ -3,6 +3,7 @@ import { SignIn } from '../screens/SignIn'
 import { Loading } from '../components/Loading'
 import { useEffect, useState } from 'react'
 import { StackRoutes } from './stack.routes'
+import { AuthProvider } from '../contexts/auth'
 
 
 export function Routes() {
@@ -24,7 +25,9 @@ export function Routes() {
 
     return (
         <NavigationContainer>
-            <StackRoutes />
+            <AuthProvider>
+                <StackRoutes />
+            </AuthProvider>
         </NavigationContainer>
     )
 }

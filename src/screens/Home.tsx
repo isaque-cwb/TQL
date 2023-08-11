@@ -8,6 +8,7 @@ import { TextInputMask } from 'react-native-masked-text';
 import { Center, useTheme } from 'native-base';
 import { Input as NBInput } from '../components/Input'
 import { Header } from '../components/Header';
+import { useUser } from '../contexts/auth';
 
 
 export function Home() {
@@ -20,7 +21,7 @@ export function Home() {
   const [isValid, setIsValid] = useState(true);
   const [isValidHour, setIsValidHour] = useState(true);
   const refInputHours = useRef(null)
-
+  const { userData, updateUser } = useUser()
   const { colors } = useTheme()
 
 
@@ -87,11 +88,11 @@ export function Home() {
         <NBInput
           fontSize={18}
           borderColor={'gray.300'}
-
+          bgColor={'gray.200'}
           width={350}
           placeholder='Colaborador'
           onChangeText={setColaborador}
-          value={colaborador}
+          value={userData.usr_nome}
           editable={false}
 
         />

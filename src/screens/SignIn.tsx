@@ -6,12 +6,13 @@ import { useNavigation } from '@react-navigation/native'
 import { Alert } from 'react-native'
 import api from '../services/api'
 import axios from 'axios'
+import { useUser } from '../contexts/auth'
 
 export function SignIn() {
   const [user, setUser] = useState('')
   const [password, setPassword] = useState('')
-
   const navigation = useNavigation()
+  const { userData, updateUser } = useUser()
 
   const { colors } = useTheme()
 
@@ -20,26 +21,23 @@ export function SignIn() {
       Alert.alert('Erro de Login', 'Informe Usuário e Senha')
     } else {
 
-      // buscar usuário no BD verificar se usuário e senha é válido
-      const response = await axios.get('https://viacep.com.br/ws/82820090/json/')
-      console.log(response.data)
 
-      // const response = await fetch('http://localhost:3000/user/users', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     usr_logins: user
-      //   }),
-      // }).then(() => {
-      //   navigation.navigate('home')
-      //   setUser('')
-      //   setPassword('')
-      //   console.log(response)
-      // }).catch((error) => {
-      //   console.log('Erro ao buscar dados: ', error)
-      // })
+      const response = await api.post('/user', {
+        usr_login: user
+      }).then((response) => {
+        const data = response.data
+
+        // verificar a senha é igual o que foi informado, aí seta dados do usuário no contexto.
+
+        updateUser(data)
+        navigation.navigate('home')
+      }).catch((error) => {
+
+        Alert.alert('Erro', `Usuário ${user} não encontrado!`)
+      })
+
+
+
 
 
 
@@ -49,6 +47,10 @@ export function SignIn() {
 
   }
 
+  function handleUserState(user: string) {
+    const userLow = user.toLowerCase()
+    setUser(userLow)
+  }
 
   return (
     <Center flex={1}  >
@@ -64,9 +66,10 @@ export function SignIn() {
 
         <NBInput
           placeholder='Digite seu Usuário'
-          onChangeText={setUser}
+          onChangeText={handleUserState}
           value={user}
           fontSize={18}
+
         />
         <NBInput
           placeholder='Digite sua Senha'

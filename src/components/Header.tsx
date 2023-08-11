@@ -3,6 +3,7 @@ import { IconButton, useTheme, Heading, StyledProps, HStack, Avatar, VStack, Cen
 import { CaretLeft } from 'phosphor-react-native'
 import LogoBranca from '../assets/logoBranca.svg'
 import { Text } from 'react-native'
+import { useUser } from '../contexts/auth'
 
 type Props = StyledProps & {
   title: string
@@ -12,7 +13,7 @@ type Props = StyledProps & {
 export function Header({ title, ...rest }: Props) {
   const { colors } = useTheme()
   const navigation = useNavigation()
-
+  const { userData } = useUser()
   function handleGoBack() {
     navigation.goBack()
   }
@@ -36,7 +37,7 @@ export function Header({ title, ...rest }: Props) {
               >Olá </Text >
               <Text numberOfLines={1} ellipsizeMode="tail"
                 style={{ color: '#fff', marginLeft: 5, overflow: 'hidden' }}
-              >Isaque Lourenço da silva filho algo mais </Text >
+              >{userData.usr_nome} </Text >
             </Stack>
           </HStack>
         </Stack>
