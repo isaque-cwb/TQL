@@ -4,9 +4,11 @@ import { Loading } from '../components/Loading'
 import { useEffect, useState } from 'react'
 import { StackRoutes } from './stack.routes'
 import { AuthProvider } from '../contexts/auth'
+import { useTheme } from 'native-base'
 
 
 export function Routes() {
+    const { colors } = useTheme()
 
     const [isLoading, setIsLoading] = useState(true)
     const [user, setUser] = useState<any>()
@@ -20,7 +22,7 @@ export function Routes() {
     }, [])
 
     if (isLoading) {
-        return <Loading />
+        return <Loading color={colors.yellow[500]} bgColor={colors.gray[900]} />
     }
 
     return (
