@@ -5,7 +5,6 @@ export function Input({ ...rest }: IInputProps) {
     return (
         <NBInput
             variant={'outline'}
-
             h={14}
             size={'md'}
             fontFamily={'body'}

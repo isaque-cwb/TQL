@@ -1460,7 +1460,7 @@
     "base64-js" "^1.2.3"
     "xmlbuilder" "^14.0.0"
 
-"@expo/prebuild-config@6.2.6":
+"@expo/prebuild-config@^6.2.6", "@expo/prebuild-config@6.2.6":
   "integrity" "sha512-uFVvDAm9dPg9p1qpnr4CVnpo2hmkZIL5FQz+VlIdXXJpe7ySh/qTGHtKWY/lWUshQkAJ0nwbKGPztGWdABns/Q=="
   "resolved" "https://registry.npmjs.org/@expo/prebuild-config/-/prebuild-config-6.2.6.tgz"
   "version" "6.2.6"
@@ -3244,6 +3244,15 @@
   "resolved" "https://registry.npmjs.org/at-least-node/-/at-least-node-1.0.0.tgz"
   "version" "1.0.0"
 
+"axios@^1.4.0":
+  "integrity" "sha512-S4XCWMEmzvo64T9GfvQDOXgYRDJ/wsSZc7Jvdgx5u1sd0JwsuPLqb3SYmusag+edF6ziyMensPVqLTSc1PiSEA=="
+  "resolved" "https://registry.npmjs.org/axios/-/axios-1.4.0.tgz"
+  "version" "1.4.0"
+  dependencies:
+    "follow-redirects" "^1.15.0"
+    "form-data" "^4.0.0"
+    "proxy-from-env" "^1.1.0"
+
 "babel-core@^7.0.0-bridge.0":
   "integrity" "sha512-poPX9mZH/5CSanm50Q+1toVci6pv5KSRv/5TWCwtzQS5XEwn40BcCrgIeMFWP9CKKIniKXNxoIOnOq4VVlGXhg=="
   "resolved" "https://registry.npmjs.org/babel-core/-/babel-core-7.0.0-bridge.0.tgz"
@@ -4595,6 +4604,11 @@
   "resolved" "https://registry.npmjs.org/flow-parser/-/flow-parser-0.206.0.tgz"
   "version" "0.206.0"
 
+"follow-redirects@^1.15.0":
+  "integrity" "sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA=="
+  "resolved" "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.2.tgz"
+  "version" "1.15.2"
+
 "fontfaceobserver@^2.1.0":
   "integrity" "sha512-6FPvD/IVyT4ZlNe7Wcn5Fb/4ChigpucKYSvD6a+0iMoLn2inpo711eyIcKjmDtE5XNcgAkSH9uN/nfAeZzHEfg=="
   "resolved" "https://registry.npmjs.org/fontfaceobserver/-/fontfaceobserver-2.3.0.tgz"
@@ -4604,6 +4618,15 @@
   "integrity" "sha512-RHkBKtLWUVwd7SqRIvCZMEvAMoGUp0XU+seQiZejj0COz3RI3hWP4sCv3gZWWLjJTd7rGwcsF5eKZGii0r/hbg=="
   "resolved" "https://registry.npmjs.org/form-data/-/form-data-3.0.1.tgz"
   "version" "3.0.1"
+  dependencies:
+    "asynckit" "^0.4.0"
+    "combined-stream" "^1.0.8"
+    "mime-types" "^2.1.12"
+
+"form-data@^4.0.0":
+  "integrity" "sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww=="
+  "resolved" "https://registry.npmjs.org/form-data/-/form-data-4.0.0.tgz"
+  "version" "4.0.0"
   dependencies:
     "asynckit" "^0.4.0"
     "combined-stream" "^1.0.8"
@@ -6632,6 +6655,11 @@
     "object-assign" "^4.1.1"
     "react-is" "^16.13.1"
 
+"proxy-from-env@^1.1.0":
+  "integrity" "sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg=="
+  "resolved" "https://registry.npmjs.org/proxy-from-env/-/proxy-from-env-1.1.0.tgz"
+  "version" "1.1.0"
+
 "pump@^3.0.0":
   "integrity" "sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww=="
   "resolved" "https://registry.npmjs.org/pump/-/pump-3.0.0.tgz"
@@ -6785,10 +6813,10 @@
     "color" "^3.1.2"
     "use-latest-callback" "^0.1.5"
 
-"react-native-reanimated@>= 1.0.0", "react-native-reanimated@~3.3.0":
-  "integrity" "sha512-LzfpPZ1qXBGy5BcUHqw3pBC0qSd22qXS3t8hWSbozXNrBkzMhhOrcILE/nEg/PHpNNp1xvGOW8NwpAMF006roQ=="
-  "resolved" "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-3.3.0.tgz"
-  "version" "3.3.0"
+"react-native-reanimated@^3.4.2", "react-native-reanimated@>= 1.0.0":
+  "integrity" "sha512-FbtG+f1PB005vDTJSv4zAnTK7nNXi+FjFgbAM5gOzIZDajfph2BFMSUstzIsN8T77+OKuugUBmcTqLnQ24EBVg=="
+  "resolved" "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-3.4.2.tgz"
+  "version" "3.4.2"
   dependencies:
     "@babel/plugin-transform-object-assign" "^7.16.7"
     "@babel/preset-typescript" "^7.16.7"
@@ -6826,7 +6854,7 @@
     "css-select" "^5.1.0"
     "css-tree" "^1.1.3"
 
-"react-native-vector-icons@*":
+"react-native-vector-icons@*", "react-native-vector-icons@^10.0.0":
   "integrity" "sha512-efMOVbZIebY8RszZPzPBoXi9pvD/NFYmjIDYxRoc9LYSzV8rMJtT8FfcO2hPu85Rn2x9xktha0+qn0B7EqMAcQ=="
   "resolved" "https://registry.npmjs.org/react-native-vector-icons/-/react-native-vector-icons-10.0.0.tgz"
   "version" "10.0.0"
@@ -6889,7 +6917,7 @@
     "object-assign" "^4.1.1"
     "react-is" "^16.12.0 || ^17.0.0 || ^18.0.0"
 
-"react@*", "react@^16.8.0 || ^17.0.0-rc.1", "react@^16.8.0 || ^17.0.0-rc.1 || ^18.0.0", "react@>=16.8", "react@>=17.0.0", "react@18.2.0":
+"react@*", "react@^16.8.0 || ^17.0.0-rc.1", "react@^16.8.0 || ^17.0.0-rc.1 || ^18.0.0", "react@>=16.3.0", "react@>=17.0.0", "react@18.2.0":
   "integrity" "sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ=="
   "resolved" "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   "version" "18.2.0"

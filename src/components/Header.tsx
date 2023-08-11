@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native'
-import { IconButton, useTheme, Heading, StyledProps, HStack, Avatar, VStack, Center, Stack, Divider } from 'native-base'
+import { IconButton, useTheme, Heading, StyledProps, HStack, Avatar, VStack, Center, Stack, Pressable, Alert, } from 'native-base'
 import { CaretLeft } from 'phosphor-react-native'
 import LogoBranca from '../assets/logoBranca.svg'
 import { Text } from 'react-native'
@@ -42,23 +42,26 @@ export function Header({ title, ...rest }: Props) {
         </Stack>
 
       </HStack>
-
-      <HStack
+      <Pressable
         w={'full'}
-        justifyContent={'space-between'}
-        alignItems={'center'}
 
-        {...rest}
+        onPress={handleGoBack}
       >
-        <IconButton
-          height={60}
-          width={60}
-          icon={<CaretLeft color={colors.gray[500]} size={24} />} onPress={handleGoBack} />
-        <Heading color={'gray.100'} textAlign={'center'} fontSize={'lg'} flex={1} ml={-10} >
-          TIMESHEET -
-          {title}
-        </Heading>
-      </HStack>
+        <HStack
+          w={'full'}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+        >
+          <IconButton
+            height={60}
+            width={60}
+            icon={<CaretLeft color={colors.gray[500]} size={24} />} onPress={handleGoBack} />
+          <Heading color={'gray.100'} textAlign={'center'} fontSize={'lg'} flex={1} ml={-10} >
+            TIMESHEET -
+            {title}
+          </Heading>
+        </HStack>
+      </Pressable>
     </VStack>
   )
 }
