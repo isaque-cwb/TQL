@@ -1,9 +1,10 @@
 import { useNavigation } from '@react-navigation/native'
-import { IconButton, useTheme, Heading, StyledProps, HStack, Avatar, VStack, Center, Stack, Pressable, Alert, } from 'native-base'
-import { CaretLeft } from 'phosphor-react-native'
+import { IconButton, useTheme, Heading, StyledProps, HStack, Avatar, VStack, Center, Stack, Pressable, Alert, Flex } from 'native-base'
+import { CaretLeft, UserCircle } from 'phosphor-react-native'
 import LogoBranca from '../assets/logoBranca.svg'
 import { Text } from 'react-native'
 import { useUser } from '../contexts/auth'
+import { useEffect } from 'react'
 
 type Props = StyledProps & {
   title: string
@@ -14,29 +15,38 @@ export function Header({ title, ...rest }: Props) {
   const { colors } = useTheme()
   const navigation = useNavigation()
   const { userData } = useUser()
+
+
   function handleGoBack() {
     navigation.goBack()
   }
 
+  useEffect(() => {
+
+  }, [])
 
   return (
-    <VStack bg={colors.purple[300]}  >
+    <VStack bg={colors.purple[300]} w={'full'}  >
       <HStack>
 
         <Center  >
           <LogoBranca width={220} />
         </Center>
 
-        <Stack w={200} justifyContent={'center'} mx={2} p={2} pr={50} >
+        <Stack w={200} justifyContent={'center'} mx={2} p={2} pt={3}  >
           <HStack >
-            <Avatar source={{ uri: 'https://github.com/isaque-cwb.png' }} />
-            <Stack p={'1'} h={50} w={130} >
+            {userData.usr_foto ?
+              <Avatar source={{ uri: `data:image/jpeg;base64,${userData.usr_foto}` }} />
+              :
+              <UserCircle size={50} color='#fff' style={{ backgroundColor: '#ccc', }} />
+            }
+            <Stack p={'1.5'} h={50} w={130}  >
 
               <Text numberOfLines={1} ellipsizeMode="tail"
-                style={{ color: '#fff', marginLeft: 5, overflow: 'hidden' }}
+                style={{ color: '#fff' }}
               >Olá </Text >
               <Text numberOfLines={1} ellipsizeMode="tail"
-                style={{ color: '#fff', marginLeft: 5, overflow: 'hidden' }}
+                style={{ color: '#fff', overflow: 'hidden', paddingRight: 30 }}
               >{userData.usr_nome} </Text >
             </Stack>
           </HStack>

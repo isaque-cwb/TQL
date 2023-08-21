@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import { Center, NativeBaseProvider, Text } from 'native-base'
+import { Center, NativeBaseProvider, Text, useTheme } from 'native-base'
 import { LogBox } from 'react-native'
 import { useFonts, Roboto_300Light, Roboto_400Regular, Roboto_500Medium, Roboto_700Bold } from '@expo-google-fonts/roboto'
 import { THEME } from './src/styles/theme'

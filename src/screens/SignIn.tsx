@@ -5,9 +5,11 @@ import { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { Alert } from 'react-native'
 import api from '../services/api'
-import axios from 'axios'
 import { useUser } from '../contexts/auth'
 import { Loading } from '../components/Loading'
+import { Buffer } from 'node:buffer'
+
+
 
 export function SignIn() {
   const [user, setUser] = useState('')
@@ -30,9 +32,18 @@ export function SignIn() {
 
         const data = response.data
 
-        // verificar a senha é igual o que foi informado, aí seta dados do usuário no contexto.
 
-        updateUser(data)
+        const user = {
+          usr_codigo: data.usr_codigo,
+          usr_login: data.usr_login,
+          usr_nome: data.usr_nome,
+          usr_email: data.usr_email,
+          usr_celular: data.usr_celular,
+          usr_foto: data.usr_foto
+        }
+
+        console.log(user)
+        updateUser(user)
         navigation.navigate('home')
         setIsLoading(false)
         setUser('')

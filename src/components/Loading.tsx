@@ -1,8 +1,8 @@
 import { Center, Spinner } from 'native-base'
 
 type SpinnerProps = {
-  color: string;
-  bgColor: string
+  color?: string;
+  bgColor?: string
 }
 
 export function Loading({ color, bgColor }: SpinnerProps) {
