@@ -49,6 +49,16 @@ export class UserService {
       throw new Error(`User ${usr_login} does not exist`)
     }
 
-    return user
+    const imageBase64 = user.usr_foto ? user.usr_foto.toString('base64') : null
+
+    const userData = {
+      usr_nome: user.usr_nome,
+      usr_login: user.usr_login,
+      usr_celular: user.usr_celular,
+      usr_email: user.usr_email,
+      usr_foto: imageBase64,
+      usr_codigo: user.usr_codigo
+    }
+    return userData
   }
 }

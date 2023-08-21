@@ -16,14 +16,8 @@ export class UserController {
     return await this.userService.findAll()
   }
 
-  @Get()
+  @Post()
   async findOne(@Body() data: userDTO) {
-    const user = await this.userService.findOne(data.usr_login)
-
-    if (!user) {
-      throw new Error(`User ${data.usr_login} not found`)
-    }
-
-    return user
+    return await this.userService.findOne(data.usr_login)
   }
 }
