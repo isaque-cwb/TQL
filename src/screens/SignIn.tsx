@@ -1,4 +1,4 @@
-import { Center, Text, HStack, Image, Stack, Box, Input, Button, useTheme } from 'native-base'
+import { Center, Text, Stack, Button, useTheme } from 'native-base'
 import Logo from '../assets/logo.svg'
 import { Input as NBInput } from '../components/Input'
 import { useState } from 'react'
@@ -7,7 +7,8 @@ import { Alert } from 'react-native'
 import api from '../services/api'
 import { useUser } from '../contexts/auth'
 import { Loading } from '../components/Loading'
-import { Buffer } from 'node:buffer'
+import crypto from 'crypto-js'
+
 
 
 
@@ -32,22 +33,30 @@ export function SignIn() {
 
         const data = response.data
 
+        const hash = crypto.MD5(data.usr_codigo + password).toString()
 
-        const user = {
-          usr_codigo: data.usr_codigo,
-          usr_login: data.usr_login,
-          usr_nome: data.usr_nome,
-          usr_email: data.usr_email,
-          usr_celular: data.usr_celular,
-          usr_foto: data.usr_foto
+
+        if (hash === data.usr_senha) {
+
+          const user = {
+            usr_codigo: data.usr_codigo,
+            usr_login: data.usr_login,
+            usr_nome: data.usr_nome,
+            usr_email: data.usr_email,
+            usr_celular: data.usr_celular,
+            usr_foto: data.usr_foto
+          }
+
+
+          updateUser(user)
+          navigation.navigate('home')
+          setIsLoading(false)
+          setUser('')
+          setPassword('')
+        } else {
+          setIsLoading(false)
+          Alert.alert('ERRO', 'Usuário ou senha inválido')
         }
-
-        console.log(user)
-        updateUser(user)
-        navigation.navigate('home')
-        setIsLoading(false)
-        setUser('')
-        setPassword('')
       }).catch((error) => {
         setIsLoading(false)
         Alert.alert('Erro', `Usuário ${user} não encontrado!`)
@@ -63,8 +72,8 @@ export function SignIn() {
   return (
     <Center flex={1}  >
 
-      <Logo width={350} />
-      <Stack space={8} margin={3} width={350}  >
+      <Logo width={'90%'} />
+      <Stack space={8} margin={3} width={'90%'}  >
         <Stack alignItems={'center'}  >
 
           <Text fontFamily={'heading'} fontSize={35} color={'purple.300'} >
@@ -80,6 +89,7 @@ export function SignIn() {
 
         />
         <NBInput
+          type='password'
           placeholder='Digite sua Senha'
           onChangeText={setPassword}
           value={password}

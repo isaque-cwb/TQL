@@ -4,7 +4,6 @@ import { CaretLeft, UserCircle } from 'phosphor-react-native'
 import LogoBranca from '../assets/logoBranca.svg'
 import { Text } from 'react-native'
 import { useUser } from '../contexts/auth'
-import { useEffect } from 'react'
 
 type Props = StyledProps & {
   title: string
@@ -21,26 +20,23 @@ export function Header({ title, ...rest }: Props) {
     navigation.goBack()
   }
 
-  useEffect(() => {
-
-  }, [])
 
   return (
-    <VStack bg={colors.purple[300]} w={'full'}  >
-      <HStack>
+    <VStack bg={colors.purple[300]} w={'full'}   >
+      <HStack space={'1'} >
 
         <Center  >
           <LogoBranca width={220} />
         </Center>
 
-        <Stack w={200} justifyContent={'center'} mx={2} p={2} pt={3}  >
+        <Stack w={'100%'} justifyContent={'center'} mx={0} p={2} pt={3}  >
           <HStack >
             {userData.usr_foto ?
               <Avatar source={{ uri: `data:image/jpeg;base64,${userData.usr_foto}` }} />
               :
               <UserCircle size={50} color='#fff' style={{ backgroundColor: '#ccc', }} />
             }
-            <Stack p={'1.5'} h={50} w={130}  >
+            <Stack p={'1.5'} h={50} w={'34%'}  >
 
               <Text numberOfLines={1} ellipsizeMode="tail"
                 style={{ color: '#fff' }}

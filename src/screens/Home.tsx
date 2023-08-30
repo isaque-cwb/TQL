@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Alert, Button, StyleSheet, Text, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { TextInput } from 'react-native-paper';
@@ -9,6 +9,7 @@ import { Center, useTheme } from 'native-base';
 import { Input as NBInput } from '../components/Input'
 import { Header } from '../components/Header';
 import { useUser } from '../contexts/auth';
+import api from '../services/api';
 
 
 export function Home() {
@@ -67,6 +68,13 @@ export function Home() {
   };
 
 
+  useEffect(() => {
+    // buscar dados para o pv e centro e centro de custo
+
+
+  }, [])
+
+
   const data = [
     { label: '', value: '' },
     { label: 'PV-101328 - Irani', value: '1' },
@@ -89,7 +97,7 @@ export function Home() {
           fontSize={18}
           borderColor={'gray.300'}
           bgColor={'gray.200'}
-          width={350}
+          width={'90%'}
           placeholder='Colaborador'
           onChangeText={setColaborador}
           value={userData.usr_nome}
@@ -100,8 +108,24 @@ export function Home() {
       </View>
 
 
+
+      <View style={styles.containerInputDate}>
+        <Text style={{ fontSize: 20 }}>Data do Registro: </Text>
+        <TextInputMask
+          type='datetime'
+          style={[styles.inputDate, isValid ? { borderColor: 'gray' } : { borderColor: 'red' }]}
+          value={date}
+          onBlur={handleDateChange}
+          onChangeText={setDate}
+          placeholder="dd/MM/yyyy"
+          keyboardType="numeric"
+          maxLength={10}
+          onFocus={() => { setDate('') }}
+        />
+      </View>
+
       <View style={styles.containerInputHour}>
-        <Text style={{ fontSize: 18 }} >Informe Qtd de Horas: </Text>
+        <Text style={{ fontSize: 20 }} >Quantidade Horas: </Text>
         <TextInputMask
           style={[styles.inputHours, isValidHour ? { borderColor: 'gray' } : { borderColor: 'red' }]}
           type="datetime"
@@ -118,22 +142,8 @@ export function Home() {
           maxLength={5}
         />
       </View>
-      <View style={styles.containerInputDate}>
-        <Text style={{ fontSize: 18 }}>Informe uma Data: </Text>
-        <TextInputMask
-          type='datetime'
-          style={[styles.inputDate, isValid ? { borderColor: 'gray' } : { borderColor: 'red' }]}
-          value={date}
-          onBlur={handleDateChange}
-          onChangeText={setDate}
-          placeholder="dd/MM/yyyy"
-          keyboardType="numeric"
-          maxLength={10}
-          onFocus={() => { setDate('') }}
-        />
-      </View>
 
-      <View >
+      <View style={styles.dropContainer} >
         <Text style={styles.labelDrop}>PV/Cliente</Text>
 
         <Dropdown
@@ -162,7 +172,7 @@ export function Home() {
         />
       </View>
 
-      <View >
+      <View style={styles.dropContainer}>
         <Text style={styles.labelDrop}>Centro de Custo</Text>
         <Dropdown
           style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
@@ -208,20 +218,23 @@ const styles = StyleSheet.create({
     marginTop: 80
   },
   button: {
-    width: 300,
+    width: '90%',
     height: 40
   },
   containerDrop: {
     backgroundColor: 'white',
     padding: 16,
   },
+  dropContainer: {
+    width: '90%'
+  },
   dropdown: {
     height: 50,
-    borderColor: 'g',
+    borderColor: 'gray',
     borderWidth: 0.5,
     borderRadius: 5,
     paddingHorizontal: 8,
-    width: 350
+
   },
   icon: {
     marginRight: 5,
@@ -252,7 +265,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   input: {
-    width: 300,
+    width: '90%',
     marginVertical: 5,
   },
   labelDrop: {
@@ -267,7 +280,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 5,
     borderRadius: 5,
-    width: 350,
+    width: '90%',
     justifyContent: 'space-between',
     marginVertical: 5,
     marginTop: 12
@@ -278,7 +291,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 5,
     borderRadius: 5,
-    width: 350,
+    width: '90%',
     justifyContent: 'space-between',
     marginVertical: 5,
   },
