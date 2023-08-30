@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { userDTO } from './user.dto'
 import { PrismaService } from 'src/database/prisma.service'
-
+import crypto from 'crypto-js'
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
@@ -54,6 +54,7 @@ export class UserService {
     const userData = {
       usr_nome: user.usr_nome,
       usr_login: user.usr_login,
+      usr_senha: user.usr_senha,
       usr_celular: user.usr_celular,
       usr_email: user.usr_email,
       usr_foto: imageBase64,
