@@ -1,40 +1,44 @@
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useRef, useState } from 'react';
-import { Alert, Button, StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, View, ScrollView, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { TextInput } from 'react-native-paper';
 import { TextInputMask } from 'react-native-masked-text';
-import { Center, useTheme } from 'native-base';
+import { Center, useTheme, Button } from 'native-base';
 import { Input as NBInput } from '../components/Input'
 import { Header } from '../components/Header';
 import { useUser } from '../contexts/auth';
 import api from '../services/api';
+import { Loading } from '../components/Loading';
 
 
 
 
 type prospectProps = {
-  value: string;
-  label: string;
-  id: number,
-  pv_cliente: string
+  idPV: string,
+  pvCliente: string,
+  idColabora: string,
+  colaborador: string,
+  matricula: string
+  CLTPJ: string
 }
 
 type ccProps = {
   value: string;
   label: string;
-  id: number,
+  idcc: string,
   cc: string
+  idpv: string
 }
 
 
 
 export function Home() {
-  const [pvCli, setPvCli] = useState('');
+  const [pvSel, setPvSel] = useState('');
   const [pvs, setPvs] = useState<prospectProps[]>([]);
   const [cc, setCc] = useState<ccProps[]>([]);
-  const [ccCli, setCcCli] = useState('');
+  const [ccSel, setCcSel] = useState('');
   const [colaborador, setColaborador] = useState('')
   const [isFocus, setIsFocus] = useState(false);
   const [time, setTime] = useState('');
@@ -44,10 +48,11 @@ export function Home() {
   const refInputHours = useRef(null)
   const { userData, updateUser } = useUser()
   const { colors } = useTheme()
+  const [isLoading, setIsLoading] = useState(false)
 
 
 
-
+  //valida formato hora
   const handleBlur = () => {
     // Verifica se o valor inserido está no formato "hh:mm"
     const timeRegex = /^([01]?[0-9]|2[0-4]):([0-5]?[0-9])$/;
@@ -72,13 +77,12 @@ export function Home() {
     }
   };
 
-
+  //valida formato data
   const handleDateChange = () => {
     const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(200\d|201[0-9]|202[0-9]|203[0-9]|2040)$/;
 
     if (date) {
       if (!dateRegex.test(date)) {
-        console.log(date)
         setIsValid(false)
         setDate('')
         Alert.alert('ERRO', 'Informe uma Data válida.')
@@ -94,11 +98,20 @@ export function Home() {
     api.get('/prospect').then((response) => {
       const data = response.data
       const pvsData = data.map((item: prospectProps) => {
-        const label = item.pv_cliente
-        const value = item.id.toString()
+        const pvCliente = item.pvCliente
+        const idPV = item.idPV
+        const idColabora = item.idColabora
+        const colaborador = item.colaborador
+        const matricula = item.matricula
+        const CLTPJ = item.CLTPJ
+
         return {
-          value,
-          label
+          pvCliente,
+          idPV,
+          idColabora,
+          colaborador,
+          matricula,
+          CLTPJ
         }
       })
       setPvs(pvsData)
@@ -106,17 +119,21 @@ export function Home() {
 
   }, [])
 
+
   //carregamento de Centro de custo
   useEffect(() => {
+
     api.get('/cc').then((response) => {
       const data = response.data
       const ccData = data.map((item: ccProps) => {
-        const label = item.cc
-        const value = item.id
+        const cc = item.cc
+        const idcc = item.idcc
+        const idpv = item.idpv
 
         return {
-          value,
-          label
+          cc,
+          idcc,
+          idpv
         }
       })
       setCc(ccData)
@@ -124,129 +141,155 @@ export function Home() {
   }, [])
 
 
+  //filtrando o Centro de custo com o pv selecionado.
+  const filteredCc = cc.filter(item => {
+    if (pvSel !== '') {
+      // Filtra os itens do centro de custo com base no PV/Cliente selecionado
+      return item.idpv === pvSel;
+    }
+    return false; // Não Retorna itens se nenhum PV/Cliente foi selecionado
+  });
+
+
+  function handleRegister() {
+    setCcSel('')
+    setPvSel('')
+    setDate('')
+    setTime('')
+  }
+
 
   return (
-    <View style={styles.container}>
-      <Header title={' APONTAMENTO'} />
-      <View  >
-        <Text style={styles.labelColabora}>Colaborador</Text>
-        <NBInput
-          fontSize={18}
-          borderColor={'gray.300'}
-          bgColor={'gray.200'}
-          width={'90%'}
-          placeholder='Colaborador'
-          onChangeText={setColaborador}
-          value={userData.usr_nome}
-          editable={false}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
 
-        />
+        <Header title={' APONTAMENTO'} />
+        <View  >
+          <Text style={styles.labelColabora}>Colaborador</Text>
+          <NBInput
+            fontSize={18}
+            borderColor={'gray.300'}
+            bgColor={'gray.100'}
+            width={'90%'}
+            placeholder='Colaborador'
+            onChangeText={setColaborador}
+            value={userData.usr_nome}
+            editable={false}
 
-      </View>
+          />
 
+        </View>
 
+        <View style={styles.dropContainer} >
+          <Text style={styles.labelDrop}>PV/Cliente</Text>
+          <Dropdown
+            style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={pvs}
+            labelField={'pvCliente'}
+            valueField={'idPV'}
+            search
+            maxHeight={200}
+            placeholder={!isFocus ? 'Select item...' : '...'}
+            searchPlaceholder="Search..."
+            value={pvSel === '' ? 'Select item...' : pvSel}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+            onChange={item => {
+              setPvSel(item.idPV);
+              setIsFocus(false);
+            }}
+            renderLeftIcon={() => (
+              null // for render icon ...
+            )} />
+        </View>
 
-      <View style={styles.containerInputDate}>
-        <Text style={{ fontSize: 20 }}>Data do Registro: </Text>
-        <TextInputMask
-          type='datetime'
-          style={[styles.inputDate, isValid ? { borderColor: 'gray' } : { borderColor: 'red' }]}
-          value={date}
-          onBlur={handleDateChange}
-          onChangeText={setDate}
-          placeholder="dd/MM/yyyy"
-          keyboardType="numeric"
-          maxLength={10}
-          onFocus={() => { setDate('') }}
-        />
-      </View>
+        <View style={styles.dropContainer}>
+          <Text style={styles.labelDrop}>Centro de Custo</Text>
+          <Dropdown
+            style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={filteredCc}
+            search
+            maxHeight={200}
+            labelField="cc"
+            valueField="idcc"
+            placeholder={!isFocus ? 'Select item...' : '...'}
+            searchPlaceholder="Search..."
+            value={ccSel === '' ? 'Select item...' : ccSel}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+            onChange={item => {
+              setCcSel(item.idcc);
+              setIsFocus(false);
+            }}
+            renderLeftIcon={() => (
+              null// for render icon ...
+            )}
+          />
+        </View>
 
-      <View style={styles.containerInputHour}>
-        <Text style={{ fontSize: 20 }} >Quantidade Horas: </Text>
-        <TextInputMask
-          style={[styles.inputHours, isValidHour ? { borderColor: 'gray' } : { borderColor: 'red' }]}
-          type="datetime"
-          ref={refInputHours}
-          options={{
-            format: 'HH:mm',
-          }}
-          value={time}
-          onChangeText={setTime}
-          onBlur={handleBlur}
-          onFocus={() => setTime('')}
-          placeholder="hh:mm"
-          keyboardType="numeric"
-          maxLength={5}
-        />
-      </View>
+        <View style={styles.containerInputDate}>
+          <Text style={{ fontSize: 20 }}>Data do Registro: </Text>
+          <TextInputMask
+            type='datetime'
+            style={[styles.inputDate, isValid ? { borderColor: 'gray' } : { borderColor: 'red' }]}
+            value={date}
+            onBlur={handleDateChange}
+            onChangeText={setDate}
+            placeholder="dd/MM/yyyy"
+            keyboardType="numeric"
+            maxLength={10}
+            onFocus={() => { setDate('') }}
+          />
+        </View>
 
-      <View style={styles.dropContainer} >
-        <Text style={styles.labelDrop}>PV/Cliente</Text>
+        <View style={styles.containerInputHour}>
+          <Text style={{ fontSize: 20 }} >Quantidade Horas: </Text>
+          <TextInputMask
+            style={[styles.inputHours, isValidHour ? { borderColor: 'gray' } : { borderColor: 'red' }]}
+            type="datetime"
+            ref={refInputHours}
+            options={{
+              format: 'HH:mm',
+            }}
+            value={time}
+            onChangeText={setTime}
+            onBlur={handleBlur}
+            onFocus={() => setTime('')}
+            placeholder="hh:mm"
+            keyboardType="numeric"
+            maxLength={5}
+          />
+        </View>
 
-        <Dropdown
-          style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          inputSearchStyle={styles.inputSearchStyle}
-          iconStyle={styles.iconStyle}
-          data={pvs}
-          labelField={'label'}
-          valueField={'value'}
-          search
-          maxHeight={200}
-          placeholder={!isFocus ? 'Select item...' : '...'}
-          searchPlaceholder="Search..."
-          value={pvCli === '' ? 'Select item...' : pvCli}
-          onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(false)}
-          onChange={item => {
-            setPvCli(item.value);
-            setIsFocus(false);
-          }}
-          renderLeftIcon={() => (
-            null // for render icon ...
-          )} />
-      </View>
-
-      <View style={styles.dropContainer}>
-        <Text style={styles.labelDrop}>Centro de Custo</Text>
-        <Dropdown
-          style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          inputSearchStyle={styles.inputSearchStyle}
-          iconStyle={styles.iconStyle}
-          data={cc}
-          search
-          maxHeight={200}
-          labelField="label"
-          valueField="value"
-          placeholder={!isFocus ? 'Select item...' : '...'}
-          searchPlaceholder="Search..."
-          value={ccCli === '' ? 'Select item...' : ccCli}
-          onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(false)}
-          onChange={item => {
-            setCcCli(item.value);
-            setIsFocus(false);
-          }}
-          renderLeftIcon={() => (
-            null// for render icon ...
-          )}
-        />
-      </View>
-
-    </View >
+        <Button
+          h={50}
+          w={'90%'}
+          bgColor={colors.purple[300]}
+          _pressed={{ bg: colors.purple[100] }}
+          onPress={handleRegister}
+        >
+          {isLoading ? <Loading color={colors.white} bgColor={colors.purple[300]} /> : <Text style={{ fontSize: 20, color: 'white' }} >Registrar</Text>}
+        </Button>
+      </View >
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    gap: 35,
+    gap: 30,
     backgroundColor: '#fff',
-    alignItems: 'center',
     paddingTop: 50,
+    alignItems: 'center'
   },
   title: {
     fontSize: 22,
@@ -319,7 +362,6 @@ const styles = StyleSheet.create({
     width: '90%',
     justifyContent: 'space-between',
     marginVertical: 5,
-    marginTop: 12
   },
   containerInputDate: {
     flexDirection: 'row',
