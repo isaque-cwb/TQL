@@ -1630,6 +1630,7 @@ model tab_01_cc {
   fld_rl_empresa                                           Int?
   fld_rl_uninegoc                                          Int?
   fld_rl_tpcc                                              Int?
+  fld_rl_ccrel                                             Int?
   fld_cc_seq_pai                                           Int?
   fld_ds_aceita_rat                                        String             @default("S") @db.VarChar(1)
   fld_ds_nivel_cc                                          Int?

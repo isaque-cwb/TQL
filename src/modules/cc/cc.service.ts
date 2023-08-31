@@ -12,25 +12,12 @@ export class CcService {
   }
 
   async findAll() {
-    const result = await this.prisma.tab_01_cc.findMany({
-      select: {
-        fld_cc_seq: true,
-        fld_ds_cdcc: true,
-        fld_ds_dscc: true
-      },
-      orderBy: {
-        fld_ds_cdcc: 'asc'
-      }
-    })
+    const result = await this.prisma
+      .$queryRaw`select fld_cc_seq as idCC, concat(fld_ds_cdcc, ' - ', fld_ds_dscc)as cc, fld_prospec_seq as idPV  from tab_01_cc
+    inner join tab_01_ccrel on fld_rl_cc = fld_cc_seq
+    inner join tab_06_prospect on fld_prospec_seq = fld_rl_prospec`
 
-    const ccData = result.map(item => {
-      const id = item.fld_cc_seq
-      const cc = item.fld_ds_cdcc + ' - ' + item.fld_ds_dscc
-
-      return { id, cc }
-    })
-
-    return ccData
+    return result
   }
 
   findOne(id: number) {
