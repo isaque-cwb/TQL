@@ -12,9 +12,29 @@ import { useUser } from '../contexts/auth';
 import api from '../services/api';
 
 
+
+
+type prospectProps = {
+  value: string;
+  label: string;
+  id: number,
+  pv_cliente: string
+}
+
+type ccProps = {
+  value: string;
+  label: string;
+  id: number,
+  cc: string
+}
+
+
+
 export function Home() {
   const [pvCli, setPvCli] = useState('');
-  const [cc, setCc] = useState('');
+  const [pvs, setPvs] = useState<prospectProps[]>([]);
+  const [cc, setCc] = useState<ccProps[]>([]);
+  const [ccCli, setCcCli] = useState('');
   const [colaborador, setColaborador] = useState('')
   const [isFocus, setIsFocus] = useState(false);
   const [time, setTime] = useState('');
@@ -24,6 +44,8 @@ export function Home() {
   const refInputHours = useRef(null)
   const { userData, updateUser } = useUser()
   const { colors } = useTheme()
+
+
 
 
   const handleBlur = () => {
@@ -67,25 +89,40 @@ export function Home() {
 
   };
 
-
+  //carregamento de pvs
   useEffect(() => {
-    // buscar dados para o pv e centro e centro de custo
-
+    api.get('/prospect').then((response) => {
+      const data = response.data
+      const pvsData = data.map((item: prospectProps) => {
+        const label = item.pv_cliente
+        const value = item.id.toString()
+        return {
+          value,
+          label
+        }
+      })
+      setPvs(pvsData)
+    })
 
   }, [])
 
+  //carregamento de Centro de custo
+  useEffect(() => {
+    api.get('/cc').then((response) => {
+      const data = response.data
+      const ccData = data.map((item: ccProps) => {
+        const label = item.cc
+        const value = item.id
 
-  const data = [
-    { label: '', value: '' },
-    { label: 'PV-101328 - Irani', value: '1' },
-    { label: 'PV-101326 - Klabin', value: '2' },
-    { label: 'Item 3', value: '3' },
-    { label: 'Item 4', value: '4' },
-    { label: 'Item 5', value: '5' },
-    { label: 'Item 6', value: '6' },
-    { label: 'Item 7', value: '7' },
-    { label: 'Item 8', value: '8' },
-  ];
+        return {
+          value,
+          label
+        }
+      })
+      setCc(ccData)
+    })
+  }, [])
+
 
 
   return (
@@ -152,11 +189,11 @@ export function Home() {
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
           iconStyle={styles.iconStyle}
-          data={data}
+          data={pvs}
+          labelField={'label'}
+          valueField={'value'}
           search
           maxHeight={200}
-          labelField="label"
-          valueField="value"
           placeholder={!isFocus ? 'Select item...' : '...'}
           searchPlaceholder="Search..."
           value={pvCli === '' ? 'Select item...' : pvCli}
@@ -167,9 +204,8 @@ export function Home() {
             setIsFocus(false);
           }}
           renderLeftIcon={() => (
-            null// for render icon ...
-          )}
-        />
+            null // for render icon ...
+          )} />
       </View>
 
       <View style={styles.dropContainer}>
@@ -180,18 +216,18 @@ export function Home() {
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
           iconStyle={styles.iconStyle}
-          data={data}
+          data={cc}
           search
           maxHeight={200}
           labelField="label"
           valueField="value"
           placeholder={!isFocus ? 'Select item...' : '...'}
           searchPlaceholder="Search..."
-          value={cc === '' ? 'Select item...' : cc}
+          value={ccCli === '' ? 'Select item...' : ccCli}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onChange={item => {
-            setCc(item.value);
+            setCcCli(item.value);
             setIsFocus(false);
           }}
           renderLeftIcon={() => (
