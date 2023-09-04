@@ -16,14 +16,34 @@ export class ProspectService {
     fld_prospec_seq as "idPV", 
     concat(fld_ds_prospectpv, ' - ', fld_ds_clienterz) as "pvCliente",
     case when fld_seq_colaborpj is null then fld_colabo_seq else fld_seq_colaborpj end as "idColabora",
-    case when fld_ds_colaborpjnm is null then fld_ds_colabonm else fld_ds_colaborpjnm end as "colaborador",
-    case when fld_ds_colaborpjmat is null then fld_ds_colabomat else fld_ds_colaborpjmat end as "matricula",
-    case when fld_ds_colaborpjmat is null then 'CLT' else 'PJ' end as "CLT/PJ"
+    case when fld_ds_colaborpjnm is null then fld_ds_colabonm else fld_ds_colaborpjnm end as "Colaborador",
+    case when fld_ds_colaborpjmat is null then fld_ds_colabomat else fld_ds_colaborpjmat end as "Matrícula",
+    case when fld_ds_colaborpjmat is null then 'CLT' else 'PJ' end as "CLT/PJ",
+    usr_codigo as "idUsuario"
     from tab_88_tsoli
     inner join tab_06_prospect on fld_prospec_seq = fld_rl_prospect
     inner join tab_01_cliente on fld_cliente_seq = fld_rl_cliente
-    left join tab_01_colabora on fld_colabo_seq = fld_rl_colabora 
+    inner join tab_01_colabora on fld_colabo_seq = fld_rl_colabora 
     left join tab_01_colaborpj on fld_seq_colaborpj = fld_rl_colaborpj
+    left join fr_usuario on usr_codigo = fld_rl_fr_usuario
+    where
+    fld_dt_tsoliapro is not null
+    union
+    select 
+    fld_sq_tsoli as "idSoli", 
+    fld_prospec_seq as "idPV", 
+    concat(fld_ds_prospectpv, ' - ', fld_ds_clienterz) as "pvCliente",
+    case when fld_seq_colaborpj is null then fld_colabo_seq else fld_seq_colaborpj end as "idColabora",
+    case when fld_ds_colaborpjnm is null then fld_ds_colabonm else fld_ds_colaborpjnm end as "Colaborador",
+    case when fld_ds_colaborpjmat is null then fld_ds_colabomat else fld_ds_colaborpjmat end as "Matrícula",
+    case when fld_ds_colaborpjmat is null then 'CLT' else 'PJ' end as "CLT/PJ",
+    usr_codigo as "idUsuario"
+    from tab_88_tsoli
+    inner join tab_06_prospect on fld_prospec_seq = fld_rl_prospect
+    inner join tab_01_cliente on fld_cliente_seq = fld_rl_cliente
+    inner join tab_01_colaborpj on fld_seq_colaborpj = fld_rl_colaborpj
+    inner join tab_01_colabora on fld_ds_colabonm = fld_ds_colaborpjnm 
+    left join fr_usuario on usr_codigo = fld_rl_fr_usuario
     where
     fld_dt_tsoliapro is not null`
 
