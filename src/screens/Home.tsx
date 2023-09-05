@@ -22,6 +22,7 @@ type prospectProps = {
   colaborador: string,
   matricula: string
   CLTPJ: string
+  idUsuario: string
 }
 
 type ccProps = {
@@ -32,6 +33,12 @@ type ccProps = {
   idpv: string
 }
 
+type soliProps = {
+  idSoli: number,
+  RLPV: string,
+  idCC: string
+}
+
 
 
 export function Home() {
@@ -39,8 +46,10 @@ export function Home() {
   const [pvs, setPvs] = useState<prospectProps[]>([]);
   const [cc, setCc] = useState<ccProps[]>([]);
   const [ccSel, setCcSel] = useState('');
+  const [soli, setSoli] = useState<soliProps[]>([]);
   const [colaborador, setColaborador] = useState('')
-  const [isFocus, setIsFocus] = useState(false);
+  const [isFocusPv, setIsFocusPv] = useState(false);
+  const [isFocusCc, setIsFocusCc] = useState(false);
   const [time, setTime] = useState('');
   const [date, setDate] = useState('');
   const [isValid, setIsValid] = useState(true);
@@ -49,6 +58,7 @@ export function Home() {
   const { userData, updateUser } = useUser()
   const { colors } = useTheme()
   const [isLoading, setIsLoading] = useState(false)
+  const [idSoli, setIdSoli] = useState(null)
 
 
 
@@ -104,6 +114,7 @@ export function Home() {
         const colaborador = item.colaborador
         const matricula = item.matricula
         const CLTPJ = item.CLTPJ
+        const idUsuario = item.idUsuario
 
         return {
           pvCliente,
@@ -111,7 +122,8 @@ export function Home() {
           idColabora,
           colaborador,
           matricula,
-          CLTPJ
+          CLTPJ,
+          idUsuario
         }
       })
       setPvs(pvsData)
@@ -141,6 +153,36 @@ export function Home() {
   }, [])
 
 
+  //Carregamento de Solicitações
+  useEffect(() => {
+    api.get('/soli').then((response) => {
+      const data = response.data
+      const soliData = data.map((item: soliProps) => {
+        const idSoli = item.idSoli
+        const RLPV = item.RLPV
+        const idCC = item.idCC
+
+        return {
+          idSoli,
+          RLPV,
+          idCC
+        }
+      })
+      setSoli(soliData)
+    })
+
+  }, [])
+
+  //filtrando o pv com o usuário logado
+  const filteredPv = pvs.filter(item => {
+    if (userData.usr_codigo !== '') {
+      // Filtra os itens do centro de custo com base no PV/Cliente selecionado
+      return item.idUsuario === userData.usr_codigo;
+    }
+    return false; // Não Retorna itens se nenhum PV/Cliente foi selecionado
+  });
+
+
   //filtrando o Centro de custo com o pv selecionado.
   const filteredCc = cc.filter(item => {
     if (pvSel !== '') {
@@ -151,11 +193,62 @@ export function Home() {
   });
 
 
+
+
   function handleRegister() {
-    setCcSel('')
-    setPvSel('')
-    setDate('')
-    setTime('')
+
+    const dataRegistro = new Date().toISOString()
+    const [ano, mes, dia] = dataRegistro.split('-')
+    const diaReg = dia.substring(0, 2)
+    const dataRegFormat = `${diaReg}/${mes}/${ano}`
+
+    const filteredSoli = soli.filter(item => {
+
+      if (pvSel !== '' && ccSel !== '') {
+
+        // filtra as soli de acordo com o pv e centro de custo 
+        return item.RLPV === pvSel && item.idCC === ccSel;
+      }
+      return false; // não retorna itens se nenhum pv o cc for informado
+
+    })
+
+    switch (true) {
+      case pvSel === '':
+        return alert('PV não Informado, escolha um PV')
+      case ccSel === '':
+        return alert('Centro de Custo não Informado, escolha um Centro de Custo')
+
+      case date === '':
+        return alert('Data do Registo não Informado, informe a Data do Registro')
+
+      case time === '':
+        return alert('Quantidade de Horas não Informado, informe uma Qtd de Horas')
+
+      case filteredSoli.length == 0:
+        return alert('Não encontrado Solicitações para este PV com este Centro de Custo')
+
+      default:
+        break;
+    }
+
+
+    api.post('time-sheet/create', {
+      fld_dt_tlanca: dataRegFormat,
+      fld_dt_tlancarg: date,
+      fld_ds_tlancatp: "1",
+      fld_rl_tsoli: filteredSoli[0].idSoli,
+      fld_hh_tlancahora: time
+    }).then(() => {
+      setCcSel('')
+      setPvSel('')
+      setDate('')
+      setTime('')
+      Alert.alert('Apontamento Registrado com Sucesso!')
+    }).catch((error) => {
+      throw new Error('Erro Não foi possível registrar Apontamento')
+    })
+
   }
 
 
@@ -163,7 +256,7 @@ export function Home() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
 
-        <Header title={' APONTAMENTO'} />
+        <Header title={' Apontamento'} />
         <View  >
           <Text style={styles.labelColabora}>Colaborador</Text>
           <NBInput
@@ -183,24 +276,24 @@ export function Home() {
         <View style={styles.dropContainer} >
           <Text style={styles.labelDrop}>PV/Cliente</Text>
           <Dropdown
-            style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+            style={[styles.dropdown, isFocusPv && { borderWidth: 1, borderColor: colors.purple[200] }]}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
             inputSearchStyle={styles.inputSearchStyle}
             iconStyle={styles.iconStyle}
-            data={pvs}
+            data={filteredPv}
             labelField={'pvCliente'}
             valueField={'idPV'}
             search
             maxHeight={200}
-            placeholder={!isFocus ? 'Select item...' : '...'}
+            placeholder={!isFocusPv ? 'Select item...' : '...'}
             searchPlaceholder="Search..."
             value={pvSel === '' ? 'Select item...' : pvSel}
-            onFocus={() => setIsFocus(true)}
-            onBlur={() => setIsFocus(false)}
+            onFocus={() => setIsFocusPv(true)}
+            onBlur={() => setIsFocusPv(false)}
             onChange={item => {
               setPvSel(item.idPV);
-              setIsFocus(false);
+              setIsFocusPv(false);
             }}
             renderLeftIcon={() => (
               null // for render icon ...
@@ -210,7 +303,7 @@ export function Home() {
         <View style={styles.dropContainer}>
           <Text style={styles.labelDrop}>Centro de Custo</Text>
           <Dropdown
-            style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+            style={[styles.dropdown, isFocusCc && { borderWidth: 1, borderColor: colors.purple[200] }]}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
             inputSearchStyle={styles.inputSearchStyle}
@@ -220,14 +313,14 @@ export function Home() {
             maxHeight={200}
             labelField="cc"
             valueField="idcc"
-            placeholder={!isFocus ? 'Select item...' : '...'}
+            placeholder={!isFocusCc ? 'Select item...' : '...'}
             searchPlaceholder="Search..."
             value={ccSel === '' ? 'Select item...' : ccSel}
-            onFocus={() => setIsFocus(true)}
-            onBlur={() => setIsFocus(false)}
+            onFocus={() => setIsFocusCc(true)}
+            onBlur={() => setIsFocusCc(false)}
             onChange={item => {
               setCcSel(item.idcc);
-              setIsFocus(false);
+              setIsFocusCc(false);
             }}
             renderLeftIcon={() => (
               null// for render icon ...
@@ -275,6 +368,7 @@ export function Home() {
           bgColor={colors.purple[300]}
           _pressed={{ bg: colors.purple[100] }}
           onPress={handleRegister}
+
         >
           {isLoading ? <Loading color={colors.white} bgColor={colors.purple[300]} /> : <Text style={{ fontSize: 20, color: 'white' }} >Registrar</Text>}
         </Button>

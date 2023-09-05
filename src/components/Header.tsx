@@ -30,16 +30,16 @@ export function Header({ title, ...rest }: Props) {
         </Center>
 
         <Stack w={'100%'} justifyContent={'center'} mx={0} p={2} pt={3}  >
-          <HStack >
+          <HStack  >
             {userData.usr_foto ?
               <Avatar source={{ uri: `data:image/jpeg;base64,${userData.usr_foto}` }} />
               :
-              <UserCircle size={50} color='#fff' style={{ backgroundColor: '#ccc', }} />
+              <UserCircle size={50} color='#fff' />
             }
             <Stack p={'1.5'} h={50} w={'34%'}  >
 
               <Text numberOfLines={1} ellipsizeMode="tail"
-                style={{ color: '#fff' }}
+                style={{ color: '#fff', }}
               >Olá </Text >
               <Text numberOfLines={1} ellipsizeMode="tail"
                 style={{ color: '#fff', overflow: 'hidden', paddingRight: 30 }}
@@ -64,7 +64,7 @@ export function Header({ title, ...rest }: Props) {
             width={60}
             icon={<CaretLeft color={colors.gray[500]} size={24} />} onPress={handleGoBack} />
           <Heading color={'gray.100'} textAlign={'center'} fontSize={'lg'} flex={1} ml={-10} >
-            TIMESHEET -
+            Time Sheet -
             {title}
           </Heading>
         </HStack>
