@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { userDTO } from './user.dto'
 import { PrismaService } from 'src/database/prisma.service'
-import crypto from 'crypto-js'
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}

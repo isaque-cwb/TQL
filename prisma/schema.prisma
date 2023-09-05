@@ -12,61 +12,6 @@ datasource db {
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model TblLancamento_new {
-  Lancamento_Id            Int?
-  Lancamento_Data          DateTime? @db.Timestamptz(6)
-  Lancamento_Origem        String?   @db.VarChar(10)
-  Lancamento_Favorecido    String?   @db.VarChar(255)
-  Lancamento_Categoria     String?   @db.VarChar(255)
-  Lancamento_Conta         String?   @db.VarChar(255)
-  Lancamento_Documento     String?   @db.VarChar(255)
-  Lancamento_Historico     String?
-  Lancamento_CC            String?   @db.VarChar(255)
-  Lancamento_Agencia       String?   @db.VarChar(255)
-  Lancamento_Banco         String?   @db.VarChar(255)
-  Lancamento_CCorrente     String?   @db.VarChar(20)
-  Lancamento_DtVencimento  DateTime? @db.Timestamptz(6)
-  Lancamento_Parcela       String?   @db.VarChar(10)
-  Lancamento_ValorOriginal String?   @db.VarChar(255)
-  Lancamento_Valor         String?   @db.VarChar(255)
-  Lancamento_Desconto      String?   @db.VarChar(255)
-  Lancamento_Acrecimo      String?   @db.VarChar(255)
-  Lancamento_ValorPago     String?   @db.VarChar(255)
-  Lancamento_DtPagamento   DateTime? @db.Timestamptz(6)
-  Lancamento_Pago          Boolean?
-  Lancamento_MovCaixa      Boolean?
-  Lancamento_MovBanco      Boolean?
-  Lancamento_ValorTotal    String?   @db.VarChar(255)
-  Lancamento_Chave         String?   @db.VarChar(255)
-  Lancamento_Alfa          String?   @db.VarChar(255)
-  Lancamento_Select        Boolean?
-
-  @@ignore
-}
-
-model bsl_cadastro_de_produtos {
-  bsl_cad_id         Int          @id @unique @default(autoincrement())
-  bsl_cad_nome       String       @db.VarChar(20)
-  bsl_cad_disponivel Boolean?
-  bsl_vendas         bsl_vendas[]
-}
-
-model bsl_estoque {
-  bsl_est_id             Int      @id @unique @default(autoincrement())
-  bsl_est_produto        Int
-  bsl_est_quantidade     Decimal? @db.Decimal(9, 2)
-  bsl_est_valor_unitario Decimal? @db.Decimal(9, 2)
-}
-
-model bsl_vendas {
-  bsl_ven_id               Int                       @id @unique @default(autoincrement())
-  bsl_cad_id               Int?
-  bsl_ven_quantidade       Decimal?                  @db.Decimal(9, 2)
-  bsl_ven_valor_unitario   Decimal?                  @db.Decimal(9, 2)
-  bsl_cadastro_de_produtos bsl_cadastro_de_produtos? @relation(fields: [bsl_cad_id], references: [bsl_cad_id], onDelete: NoAction, onUpdate: NoAction, map: "bsl_vendas_fk_bsl_cad_591b704c")
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model cargo_agrupado {
   fld_ds_coloralege String? @db.VarChar(35)
 
@@ -1016,11 +961,6 @@ model fr_tarefa_tempo {
   fr_tarefa  fr_tarefa @relation(fields: [trf_codigo], references: [trf_codigo], onDelete: Cascade, onUpdate: NoAction, map: "fr_tarefa_tempo_fk")
 }
 
-model fr_template_path {
-  sis_codigo String  @id @db.VarChar(3)
-  tem_path   String? @db.VarChar(2000)
-}
-
 model fr_tipo_event {
   fte_cod       Int    @id @unique @default(autoincrement())
   fte_descricao String @db.VarChar(20)
@@ -1114,29 +1054,6 @@ model fr_versao {
   usr_codigo    Int
 }
 
-model ppp_cidades {
-  ppp_cid_id   Int         @id
-  ppp_cid_nome String      @db.VarChar(36)
-  ppp_est_id   Int?
-  ppp_estado   ppp_estado? @relation(fields: [ppp_est_id], references: [ppp_est_id], onDelete: NoAction, onUpdate: NoAction, map: "ppp_cidades_fk_ppp_es_f0a503b6")
-  ppp_teste    ppp_teste[]
-}
-
-model ppp_estado {
-  ppp_est_id  Int           @id
-  ppp_est_uf  String        @db.VarChar(20)
-  ppp_cidades ppp_cidades[]
-  ppp_teste   ppp_teste[]
-}
-
-model ppp_teste {
-  ppp_teste_id Int         @id
-  ppp_cid_id   Int
-  ppp_est_id   Int?
-  ppp_cidades  ppp_cidades @relation(fields: [ppp_cid_id], references: [ppp_cid_id], onDelete: NoAction, onUpdate: NoAction, map: "ppp_teste_fk_ppp_cida_040a0800")
-  ppp_estado   ppp_estado? @relation(fields: [ppp_est_id], references: [ppp_est_id], onDelete: NoAction, onUpdate: NoAction, map: "ppp_teste_fk_ppp_esta_8b5403b0")
-}
-
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model qtd_cargo_ase {
   count BigInt?
@@ -1203,6 +1120,7 @@ model tab_00_129transi {
   fld_ds_transi_sittit String?   @db.VarChar(40)
   fld_nm_transi_codfpg Float?
   fld_ds_transi_desfpg String?   @db.VarChar(30)
+  fld_ds_transi_ctrl1  String?   @db.VarChar(1)
   fld_ds_origemdado    String?   @db.VarChar(3)
   fld_hr_transi_horger DateTime? @db.Time(6)
 }
@@ -1402,7 +1320,7 @@ model tab_00_config_cpend {
   fld_ds_infgestor     String?          @db.VarChar(1)
   fld_ds_tipocomunica  String?          @db.VarChar(50)
   fld_ds_mensagem      String?
-  fld_ds_tipo_uso      String?          @db.VarChar(4)
+  fld_ds_tipo_uso      String?          @db.VarChar(8)
   tab_37_pencomo       tab_37_pencomo[]
 }
 
@@ -1432,6 +1350,8 @@ model tab_00_confsys {
 
 model tab_00_cortes {
   fld_sq_cortes        Int       @id @unique @default(autoincrement())
+  fld_dt_apur602       DateTime? @db.Date
+  fld_ds_histo602      String?   @db.VarChar(100)
   fld_dt_corte301      DateTime? @db.Date
   fld_dt_apura301      DateTime? @db.Date
   fld_ds_histori301    String?   @db.VarChar(100)
@@ -1440,8 +1360,6 @@ model tab_00_cortes {
   fld_dt_corte210      DateTime? @db.Date
   fld_dt_apura210      DateTime? @db.Date
   fld_ds_histori210    String?   @db.VarChar(100)
-  fld_dt_apur602       DateTime? @db.Date
-  fld_ds_histo602      String?   @db.VarChar(100)
   fld_dt_apura998      DateTime? @db.Date
   fld_ds_histori998    String?   @db.VarChar(100)
   fld_dt_corte129      DateTime? @db.Date
@@ -1523,6 +1441,7 @@ model tab_00_fprf303fol {
   fld_vl_fprf303folsal   Float?
   fld_ds_fprf303foldseve String?   @db.VarChar(50)
   fld_vl_fprf303folref   Float?
+  fld_vl_fprf303folvl    Float?
   fld_dt_fprf303foldta   DateTime? @db.Date
   fld_dt_fprf303foldtf   DateTime? @db.Date
   fld_ds_fprf303folsit   String?   @db.VarChar(25)
@@ -1534,7 +1453,6 @@ model tab_00_fprf303fol {
   fld_ds_fprf303folctrl1 String?   @db.VarChar(1)
   fld_dt_fprf303folpe    DateTime? @db.Date
   fld_ds_fprf303foleve   String?   @db.VarChar(4)
-  fld_vl_fprf303folvl    Float?
 }
 
 model tab_00_log {
@@ -1550,8 +1468,8 @@ model tab_00_relatorio {
   fld_ds_pastatprelid       String?                     @db.VarChar(196)
   rel_modificado            DateTime?                   @db.Timestamp(6)
   fld_nr_idmaker            Int?
-  fld_ds_pastatprelsg       String?                     @db.VarChar(12)
-  fld_ds_pastatpreldr       String?                     @db.VarChar(196)
+  fld_ds_pastatprelsg       String                      @db.VarChar(12)
+  fld_ds_pastatpreldr       String                      @db.VarChar(196)
   tab_09_pastatpfamrel      tab_09_pastatpfamrel[]
   tab_09_pastatpfamrel_temp tab_09_pastatpfamrel_temp[]
 }
@@ -1577,7 +1495,7 @@ model tab_00_srnf130 {
   fld_nm_srnf130nt      Int?
   fld_ds_srnf130prod    String?   @db.VarChar(15)
   fld_ds_srnf130fam     String?   @db.VarChar(5)
-  fld_ds_srnf130dep     String?   @db.VarChar(20)
+  fld_ds_srnf130dep     String?   @db.VarChar(10)
   fld_vl_srnf130qtfat   Float?
   fld_vl_srnf130qtdev   Float?
   fld_ds_srnf130unvend  String?   @db.VarChar(2)
@@ -1591,10 +1509,10 @@ model tab_00_srnf130 {
   fld_nm_srnf130entvin  Int?
   fld_dt_srnf130dtnfvin DateTime? @db.Date
   fld_nm_srnf130nrroma  String?   @db.VarChar(20)
-  fld_nm_srnf130tpnf    Int?
-  fld_ds_srnf130dstpnf  String?   @db.VarChar(25)
-  fld_nm_srnf130tpsal   Int?
+  fld_ds_srnf130dstpnf  String?   @db.VarChar(50)
   fld_ds_srnf130dstpsal String?   @db.VarChar(25)
+  fld_nm_srnf130tpnf    Int?
+  fld_nm_srnf130tpsal   String?   @db.VarChar(25)
 }
 
 model tab_00_uf {
@@ -1625,12 +1543,11 @@ model tab_01_cc {
   fld_cc_seq                                               Int                @id @unique @default(autoincrement())
   fld_ds_cdcc                                              String             @unique @db.VarChar(12)
   fld_dt_cc                                                DateTime?          @db.Date
-  fld_ds_dscc                                              String?            @db.VarChar(150)
+  fld_ds_dscc                                              String?            @db.VarChar(80)
   fld_ds_obcc                                              String?            @db.VarChar(80)
   fld_rl_empresa                                           Int?
   fld_rl_uninegoc                                          Int?
   fld_rl_tpcc                                              Int?
-  fld_rl_ccrel                                             Int?
   fld_cc_seq_pai                                           Int?
   fld_ds_aceita_rat                                        String             @default("S") @db.VarChar(1)
   fld_ds_nivel_cc                                          Int?
@@ -1680,7 +1597,7 @@ model tab_01_ccrel {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model tab_01_cliente {
   fld_cliente_seq       Int               @id @unique @default(autoincrement())
-  fld_ds_clientecnpj    String?           @unique @db.VarChar(14)
+  fld_ds_clientecnpj    String?           @db.VarChar(14)
   fld_ds_clienterz      String            @db.VarChar(170)
   fld_ds_clientecep     String            @db.VarChar(8)
   fld_ds_clientehis     Int?
@@ -1730,9 +1647,9 @@ model tab_01_colabora {
   tab_00_cida                                                        tab_00_cida?                @relation(fields: [fld_rl_colaboracida], references: [fld_cida_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colabora_fk_ta_1066e20f")
   tab_06_prospect                                                    tab_06_prospect?            @relation(fields: [fld_rl_prospect], references: [fld_prospec_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colabora_fk_ta_1c49b5a6")
   tab_01_crcolabora                                                  tab_01_crcolabora           @relation(fields: [fld_rl_colabocr], references: [fld_crcolabora_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colabora_fk_ta_262cb87e")
+  tab_09_comdisciogl                                                 tab_09_comdisciogl?         @relation(fields: [fld_rl_comdisciogl], references: [fld_sq_comdisciopgl], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colabora_fk_ta_88948a8a")
   tab_01_uninegoc                                                    tab_01_uninegoc?            @relation(fields: [fld_uninegoc_seq], references: [fld_uninegoc_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colabora_fk_ta_757785f0")
   tab_01_sxcolabora                                                  tab_01_sxcolabora           @relation(fields: [fld_rl_colabosx], references: [fld_sxcolabo_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colabora_fk_ta_86e7f900")
-  tab_09_comdisciogl                                                 tab_09_comdisciogl?         @relation(fields: [fld_rl_comdisciogl], references: [fld_sq_comdisciopgl], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colabora_fk_ta_88948a8a")
   tab_01_tpcolabocont                                                tab_01_tpcolabocont         @relation(fields: [fld_rl_colabotpcon], references: [fld_tpcolabo_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colabora_fk_ta_892eea20")
   tab_01_tipocolabohh                                                tab_01_tipocolabohh         @relation(fields: [fld_rl_colobotipohh], references: [fld_tpcolabohh_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colabora_fk_ta_ddfbb37a")
   fr_usuario_tab_01_colabora_fld_rl_fr_usuarioTofr_usuario           fr_usuario?                 @relation("tab_01_colabora_fld_rl_fr_usuarioTofr_usuario", fields: [fld_rl_fr_usuario], references: [usr_codigo], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colabora_relation_6")
@@ -1763,8 +1680,8 @@ model tab_01_colabora {
   tab_37_pencomo_tab_37_pencomo_fld_rl_colaboraTotab_01_colabora     tab_37_pencomo[]            @relation("tab_37_pencomo_fld_rl_colaboraTotab_01_colabora")
   tab_40_sechlac_tab_40_sechlac_fld_rl_colabora_soTotab_01_colabora  tab_40_sechlac[]            @relation("tab_40_sechlac_fld_rl_colabora_soTotab_01_colabora")
   tab_40_sechlac_tab_40_sechlac_fld_rl_colabora_geTotab_01_colabora  tab_40_sechlac[]            @relation("tab_40_sechlac_fld_rl_colabora_geTotab_01_colabora")
-  tab_41_pvi_tab_41_pvi_fld_rl_colabora_tanteTotab_01_colabora       tab_41_pvi[]                @relation("tab_41_pvi_fld_rl_colabora_tanteTotab_01_colabora")
   tab_41_pvi_tab_41_pvi_fld_rl_colabora_trataTotab_01_colabora       tab_41_pvi[]                @relation("tab_41_pvi_fld_rl_colabora_trataTotab_01_colabora")
+  tab_41_pvi_tab_41_pvi_fld_rl_colabora_tanteTotab_01_colabora       tab_41_pvi[]                @relation("tab_41_pvi_fld_rl_colabora_tanteTotab_01_colabora")
   tab_41_pvimov                                                      tab_41_pvimov[]
   tab_88_tconfigenvio                                                tab_88_tconfigenvio[]
   tab_88_tsoli                                                       tab_88_tsoli[]
@@ -1823,28 +1740,29 @@ model tab_01_colabora_pvmov {
 }
 
 model tab_01_colaborapjanexo {
-  fld_seq_colaborapjanexo   Int                 @id @unique @default(autoincrement())
+  fld_seq_colaborapjanexo   Int                    @id @unique @default(autoincrement())
   fld_rl_colacontrapj       Int
-  fld_dt_colaborapjanexoreg DateTime?           @db.Date
-  fld_img_colaborapjanexo   String?             @db.VarChar(255)
-  fld_ds_colaborapjanexo    String?             @db.VarChar(25)
-  fld_rl_colacontrapjrv     Int
-  tab_01_colacontrapj       tab_01_colacontrapj @relation(fields: [fld_rl_colacontrapj], references: [fld_seq_colacontrapj], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colaborapjanex_ea0d4fa5")
+  fld_dt_colaborapjanexoreg DateTime?              @db.Date
+  fld_img_colaborapjanexo   String?                @db.VarChar(255)
+  fld_ds_colaborapjanexo    String?                @db.VarChar(25)
+  fld_rl_colacontrapjrv     Int?
+  tab_01_colacontrapjrv     tab_01_colacontrapjrv? @relation(fields: [fld_rl_colacontrapjrv], references: [fld_seq_colacontrapjrv], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colaborapjanex_32a9c6bc")
+  tab_01_colacontrapj       tab_01_colacontrapj    @relation(fields: [fld_rl_colacontrapj], references: [fld_seq_colacontrapj], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colaborapjanex_ea0d4fa5")
 }
 
 model tab_01_colaborpj {
   fld_seq_colaborpj      Int                     @id @unique @default(autoincrement())
-  fld_ds_colaborpjemp    String?                 @db.VarChar(80)
-  fld_ds_colaborpjcnpj   String?                 @db.VarChar(14)
+  fld_rl_uninegoc        Int
+  fld_ds_colaborpjemp    String                  @unique @db.VarChar(80)
+  fld_ds_colaborpjcnpj   String                  @unique @db.VarChar(14)
   fld_dt_colaborpjdtini  DateTime?               @db.Date
   fld_dt_colaborpjdtfim  DateTime?               @db.Date
-  fld_ds_colaborpjcpf    String?                 @db.VarChar(11)
-  fld_ds_colaborpjmat    String?                 @db.VarChar(15)
+  fld_ds_colaborpjcpf    String?                 @unique @db.VarChar(11)
+  fld_ds_colaborpjmat    String                  @unique @db.VarChar(15)
   fld_dt_colaborpjdtnas  DateTime?               @db.Date
-  fld_ds_colaborpjnm     String?                 @db.VarChar(100)
+  fld_ds_colaborpjnm     String                  @db.VarChar(100)
   fld_ds_colaborpjtel    String?                 @db.VarChar(15)
   fld_ds_colaborpjemail  String?                 @db.VarChar(120)
-  fld_rl_uninegoc        Int?
   fld_nm_colaborpjdia    Int?
   fld_nm_colaborpjmes    Int?
   fld_hr_colaborpjent    DateTime?               @db.Time(6)
@@ -1858,11 +1776,10 @@ model tab_01_colaborpj {
   fld_ds_colaborpjobs    String?                 @db.VarChar(120)
   fld_rl_cc              Int?
   fld_rl_comdisciogl     Int?
-  fld_check_avisos       Int?
   tab_01_cc              tab_01_cc?              @relation(fields: [fld_rl_cc], references: [fld_cc_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_cc_fk")
   tab_01_empresa         tab_01_empresa?         @relation(fields: [fld_rl_emp], references: [fld_emp_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_empresa_fk")
   tab_01_sitcolapj       tab_01_sitcolapj?       @relation(fields: [fld_rl_sitcolapj], references: [fld_sq_sitcolapj], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_sitcolapj_fk")
-  tab_01_uninegoc        tab_01_uninegoc?        @relation(fields: [fld_rl_uninegoc], references: [fld_uninegoc_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_uninegoc_fk")
+  tab_01_uninegoc        tab_01_uninegoc         @relation(fields: [fld_rl_uninegoc], references: [fld_uninegoc_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_uninegoc_fk")
   tab_09_comdisciogl     tab_09_comdisciogl?     @relation(fields: [fld_rl_comdisciogl], references: [fld_sq_comdisciopgl], onDelete: NoAction, onUpdate: NoAction, map: "tab_09_comdisciogl_fk")
   tab_97_rateio          tab_97_rateio?          @relation(fields: [fld_rl_tprateio], references: [fld_sq_tprateio], onDelete: NoAction, onUpdate: NoAction, map: "tab_97_rateio_fk")
   tab_01_colapjcontrato  tab_01_colapjcontrato[]
@@ -1873,44 +1790,45 @@ model tab_01_colacontrapj {
   fld_seq_colacontrapj   Int                      @id @unique @default(autoincrement())
   fld_rl_sitcontratopj   Int
   fld_rl_modpgto         Int
-  fld_ds_colacontrapj    String                   @db.VarChar(25)
+  fld_ds_colacontrapj    String                   @unique @db.VarChar(25)
   fld_dt_colacontrapjreg DateTime                 @db.Date
   fld_dt_colacontrapjdis DateTime?                @db.Date
   fld_nm_colacontrapjpis Int?
   fld_ds_colacontrapjhis String?
   tab_01_colaborapjanexo tab_01_colaborapjanexo[]
-  tab_01_modpgto         tab_01_modpgto           @relation(fields: [fld_rl_modpgto], references: [fld_seq_modpgto], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colacontrapj_f_5cd9fc40")
   tab_01_sitcontratops   tab_01_sitcontratops     @relation(fields: [fld_rl_sitcontratopj], references: [fld_seq_sitcontratops], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colacontrapj_f_c216d478")
+  tab_01_modpgto         tab_01_modpgto           @relation(fields: [fld_rl_modpgto], references: [fld_seq_modpgto], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colacontrapj_f_5cd9fc40")
   tab_01_colacontrapjrv  tab_01_colacontrapjrv[]
   tab_01_colapjcontrato  tab_01_colapjcontrato[]
 }
 
 model tab_01_colacontrapjrv {
-  fld_seq_colacontrapjrv   Int                 @id @unique @default(autoincrement())
+  fld_seq_colacontrapjrv   Int                      @id @unique @default(autoincrement())
   fld_rl_colacontrapj      Int
   fld_nm_colacontrapjrv    Int
-  fld_dt_colacontrapjregrv DateTime            @db.Date
-  fld_dt_colacontrapjinirv DateTime            @db.Date
-  fld_dt_colacontrapjfimrv DateTime?           @db.Date
-  fld_ds_colacontrapjrv    String?             @db.VarChar(120)
+  fld_dt_colacontrapjregrv DateTime                 @db.Date
+  fld_dt_colacontrapjinirv DateTime                 @db.Date
+  fld_dt_colacontrapjfimrv DateTime?                @db.Date
+  fld_ds_colacontrapjrv    String?                  @db.VarChar(120)
   fld_vl_colacontrapjrv    Float?
-  tab_01_colacontrapj      tab_01_colacontrapj @relation(fields: [fld_rl_colacontrapj], references: [fld_seq_colacontrapj], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colacontrapjrv_8fb43f99")
+  tab_01_colaborapjanexo   tab_01_colaborapjanexo[]
+  tab_01_colacontrapj      tab_01_colacontrapj      @relation(fields: [fld_rl_colacontrapj], references: [fld_seq_colacontrapj], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colacontrapjrv_8fb43f99")
 }
 
 model tab_01_colapjcontrato {
   fld_seq_colapjcontrato Int                 @id @unique @default(autoincrement())
   fld_rl_colacontrapj    Int
   fld_rl_colaborpj       Int
-  tab_01_colacontrapj    tab_01_colacontrapj @relation(fields: [fld_rl_colacontrapj], references: [fld_seq_colacontrapj], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colapjcontrato_883a22ed")
   tab_01_colaborpj       tab_01_colaborpj    @relation(fields: [fld_rl_colaborpj], references: [fld_seq_colaborpj], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colapjcontrato_aedc07fb")
+  tab_01_colacontrapj    tab_01_colacontrapj @relation(fields: [fld_rl_colacontrapj], references: [fld_seq_colacontrapj], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colapjcontrato_883a22ed")
 }
 
 model tab_01_colaxunineg {
   fld_colaxunineg Int             @id @unique @default(autoincrement())
   fld_rl_colabora Int
   fld_rl_uninegoc Int
-  tab_01_uninegoc tab_01_uninegoc @relation(fields: [fld_rl_uninegoc], references: [fld_uninegoc_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colaxunineg_fk_7c888ee7")
   tab_01_colabora tab_01_colabora @relation(fields: [fld_rl_colabora], references: [fld_colabo_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colaxunineg_fk_8d9d48c6")
+  tab_01_uninegoc tab_01_uninegoc @relation(fields: [fld_rl_uninegoc], references: [fld_uninegoc_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_01_colaxunineg_fk_7c888ee7")
 }
 
 model tab_01_crcolabora {
@@ -1954,12 +1872,11 @@ model tab_01_manuturno {
   fld_hr_manuturnofim  DateTime               @unique @db.Time(6)
   tab_06_prospecthisto tab_06_prospecthisto[]
   tab_13_asehh         tab_13_asehh[]
-  tab_60_histograres   tab_60_histograres[]
 }
 
 model tab_01_modpgto {
   fld_seq_modpgto     Int                   @id @unique @default(autoincrement())
-  fld_ds_modpgto      String                @unique @db.VarChar(15)
+  fld_ds_modpgto      String                @unique(map: "tab_01_modpgto_uq_fld_8cb6456b") @db.VarChar(15)
   tab_01_colacontrapj tab_01_colacontrapj[]
 }
 
@@ -1972,13 +1889,13 @@ model tab_01_repremp {
 
 model tab_01_sitcolapj {
   fld_sq_sitcolapj Int                @id @unique @default(autoincrement())
-  fld_ds_sitcolapj String             @db.VarChar(15)
+  fld_ds_sitcolapj String?            @db.VarChar(15)
   tab_01_colaborpj tab_01_colaborpj[]
 }
 
 model tab_01_sitcontratops {
   fld_seq_sitcontratops Int                   @id @unique @default(autoincrement())
-  fld_ds_sitcontratops  String                @unique @db.VarChar(15)
+  fld_ds_sitcontratops  String                @unique(map: "tab_01_sitcontratops__724428d0") @db.VarChar(15)
   tab_01_colacontrapj   tab_01_colacontrapj[]
 }
 
@@ -2014,7 +1931,6 @@ model tab_01_tipomaobra {
   fld_ds_tipomaobra    String                 @unique @db.VarChar(20)
   fld_ds_tipomaobrasig String?                @unique @db.VarChar(3)
   tab_06_prospecthisto tab_06_prospecthisto[]
-  tab_60_histograres   tab_60_histograres[]
 }
 
 model tab_01_tpcc {
@@ -2034,7 +1950,6 @@ model tab_01_unidadetempo {
   fld_ds_unidadetempo  String?                @unique @db.VarChar(12)
   fld_nm_unidadetempo  Float?
   tab_06_prospecthisto tab_06_prospecthisto[]
-  tab_60_histograres   tab_60_histograres[]
 }
 
 model tab_01_uninegoc {
@@ -2384,9 +2299,9 @@ model tab_06_pvrespon_temp {
   fld_ds_pvrespon_obs  String?   @db.VarChar(80)
   fld_ds_pvrespon_guid String?   @db.VarChar(50)
   fld_rl_colabo        Int?
-  fld_dt_inc           DateTime? @db.Date
+  fld_dt_inc           DateTime? @db.Timestamp(6)
   fld_ds_pvrespon_pv   String?   @db.VarChar(50)
-  fld_nm_pvresponfu    String    @db.VarChar(1)
+  fld_nm_pvresponfu    String?   @db.VarChar(1)
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -2519,7 +2434,7 @@ model tab_09_comarea {
 
 model tab_09_comativipre {
   fld_seq_comativipre Int                  @id @unique @default(autoincrement())
-  fld_ds_comativipre  String               @db.VarChar(70)
+  fld_ds_comativipre  String               @unique @db.VarChar(70)
   fld_nm_comativialm  Int?
   fld_nm_comativicam  Int?
   fld_ds_comativiobs  String?              @db.VarChar(80)
@@ -2604,7 +2519,7 @@ model tab_09_comfld {
   fld_sq_comfld   Int             @id @unique @default(autoincrement())
   fld_rl_prdisci  Int?
   fld_ds_comfld   String          @unique @db.VarChar(50)
-  fld_ds_comfldsg String?         @unique @db.VarChar(30)
+  fld_ds_comfldsg String?         @unique @db.VarChar(70)
   fld_ct_comfldnr Int?            @unique
   tab_09_prdisci  tab_09_prdisci? @relation(fields: [fld_rl_prdisci], references: [fld_sq_prdisci], onDelete: NoAction, onUpdate: NoAction, map: "tab_09_comfld_fk_tab__3e5120b8")
 }
@@ -3547,13 +3462,13 @@ model tab_25_treinapales {
 }
 
 model tab_25_treinapart {
-  fld_sq_treinapart    Int             @id @unique @default(autoincrement())
+  fld_sq_treinapart    Int              @id @unique @default(autoincrement())
   fld_rl_treina        Int
-  fld_rl_colabo        Int
-  fld_ds_treinapartcvv String?         @db.VarChar(1)
-  fld_ds_treinapartpr  String?         @db.VarChar(1)
-  tab_01_colabora      tab_01_colabora @relation(fields: [fld_rl_colabo], references: [fld_colabo_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_25_treinapart_fk__1bd8efe2")
-  tab_25_treina        tab_25_treina   @relation(fields: [fld_rl_treina], references: [fld_sq_manutrei], onDelete: NoAction, onUpdate: NoAction, map: "tab_25_treinapart_fk__54797739")
+  fld_rl_colabo        Int?
+  fld_ds_treinapartcvv String?          @db.VarChar(1)
+  fld_ds_treinapartpr  String?          @db.VarChar(1)
+  tab_01_colabora      tab_01_colabora? @relation(fields: [fld_rl_colabo], references: [fld_colabo_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_25_treinapart_fk__1bd8efe2")
+  tab_25_treina        tab_25_treina    @relation(fields: [fld_rl_treina], references: [fld_sq_manutrei], onDelete: NoAction, onUpdate: NoAction, map: "tab_25_treinapart_fk__54797739")
 }
 
 model tab_27_atacaorn {
@@ -3632,7 +3547,7 @@ model tab_37_pen {
   fld_rl_comdisciop     Int?
   fld_rl_compasta       Int?
   fld_rl_contag         Int?
-  fld_nm_pen            String?             @db.VarChar(20)
+  fld_nm_pen            String              @unique(map: "fld_nm_pen") @db.VarChar(20)
   fld_dt_pendtreg       DateTime?           @db.Date
   fld_dt_pendtprev      DateTime?           @db.Date
   fld_dt_pendtconc      DateTime?           @db.Date
@@ -3644,7 +3559,7 @@ model tab_37_pen {
   fld_ds_pendescrt      String?             @db.VarChar(120)
   fld_rl_sqcolaborade   Int?
   fld_rl_sqcolaborapara Int?
-  fld_ds_penobs         String?             @db.VarChar(80)
+  fld_ds_penobs         String?             @db.VarChar(110)
   fld_dt_en             DateTime?           @db.Date
   fld_dt_ende           DateTime?           @db.Date
   fld_rl_penfaseserv    Int?
@@ -3789,11 +3704,17 @@ model tab_41_pvi {
   fld_nr_pvipisval                                                  Float?
   fld_nr_pviconper                                                  Float?
   fld_nr_pviconval                                                  Float?
-  tab_01_colabora_tab_41_pvi_fld_rl_colabora_tanteTotab_01_colabora tab_01_colabora     @relation("tab_41_pvi_fld_rl_colabora_tanteTotab_01_colabora", fields: [fld_rl_colabora_tante], references: [fld_colabo_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_41_pvi_fk_tab_01__4ff21523")
-  tab_01_cc                                                         tab_01_cc?          @relation(fields: [fld_rl_cc], references: [fld_cc_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_41_pvi_fk_tab_01__63e11af9")
+  fld_nm_pvirev                                                     Int
+  fld_rl_pvicftipos                                                 Int
+  fld_ds_pvinvesti                                                  Int
+  fld_ds_pvidoc                                                     Int
+  fld_ds_pviceac                                                    String?             @db.VarChar(180)
+  tab_41_pvicftipos                                                 tab_41_pvicftipos   @relation(fields: [fld_rl_pvicftipos], references: [fld_pvicftipos_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_41_pvi_fk")
+  tab_01_colabora_tab_41_pvi_fld_rl_colabora_trataTotab_01_colabora tab_01_colabora     @relation("tab_41_pvi_fld_rl_colabora_trataTotab_01_colabora", fields: [fld_rl_colabora_trata], references: [fld_colabo_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_41_pvi_fk_tab_01__ee63127a")
   tab_01_uninegoc_tab_41_pvi_fld_rl_uninegoc_trataTotab_01_uninegoc tab_01_uninegoc     @relation("tab_41_pvi_fld_rl_uninegoc_trataTotab_01_uninegoc", fields: [fld_rl_uninegoc_trata], references: [fld_uninegoc_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_41_pvi_fk_tab_01__71a22c3f")
   tab_01_uninegoc_tab_41_pvi_fld_rl_uninegoc_tanteTotab_01_uninegoc tab_01_uninegoc     @relation("tab_41_pvi_fld_rl_uninegoc_tanteTotab_01_uninegoc", fields: [fld_rl_uninegoc_tante], references: [fld_uninegoc_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_41_pvi_fk_tab_01__a72cc3bc")
-  tab_01_colabora_tab_41_pvi_fld_rl_colabora_trataTotab_01_colabora tab_01_colabora     @relation("tab_41_pvi_fld_rl_colabora_trataTotab_01_colabora", fields: [fld_rl_colabora_trata], references: [fld_colabo_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_41_pvi_fk_tab_01__ee63127a")
+  tab_01_colabora_tab_41_pvi_fld_rl_colabora_tanteTotab_01_colabora tab_01_colabora     @relation("tab_41_pvi_fld_rl_colabora_tanteTotab_01_colabora", fields: [fld_rl_colabora_tante], references: [fld_colabo_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_41_pvi_fk_tab_01__4ff21523")
+  tab_01_cc                                                         tab_01_cc?          @relation(fields: [fld_rl_cc], references: [fld_cc_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_41_pvi_fk_tab_01__63e11af9")
   tab_06_prospect                                                   tab_06_prospect?    @relation(fields: [fld_rl_prospect], references: [fld_prospec_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_41_pvi_fk_tab_06__b3105327")
   tab_06_prospectstct                                               tab_06_prospectstct @relation(fields: [fld_rl_status], references: [fld_prospectstct_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_41_pvi_fk_tab_06__dc933593")
   tab_41_pvimov                                                     tab_41_pvimov[]
@@ -3808,35 +3729,35 @@ model tab_41_pvimov {
   fld_nr_pvimovimp Float?
   fld_ds_pvimovobs String?          @db.VarChar(45)
   fld_dt_pvimovpag DateTime?        @db.Date
-  tab_01_colabora  tab_01_colabora? @relation(fields: [fld_rl_colabora], references: [fld_colabo_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_41_pvimov_fk_tab__860f6fa2")
   tab_41_pvi       tab_41_pvi       @relation(fields: [fld_rl_pvi], references: [fld_pvi_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_41_pvimov_fk_tab__d0408a42")
+  tab_01_colabora  tab_01_colabora? @relation(fields: [fld_rl_colabora], references: [fld_colabo_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_41_pvimov_fk_tab__860f6fa2")
 }
 
 model tab_42_ncm {
   fld_ncm_seq   Int      @id @unique @default(autoincrement())
   fld_dt_ncm    DateTime @db.Date
   fld_ds_ncm    String   @db.VarChar(20)
-  fld_ds_ncmobs String?  @db.VarChar(500)
+  fld_ds_ncmobs String?  @db.VarChar(80)
 }
 
 model tab_43_ng {
-  fld_ng_seq      Int               @id @unique @default(autoincrement())
-  fld_rl_ngtp     Int
-  fld_rl_ngfr     Int
-  fld_rl_nggrup   Int
-  fld_rl_ngpv     Int?
-  fld_rl_ngovh    Int?
-  fld_ds_ng       String?           @db.VarChar(50)
-  fld_nm_ngpra    Int?
-  fld_dt_ng       DateTime?         @db.Date
-  fld_ds_ngobs    String?           @db.VarChar(60)
-  tab_43_ngovh    tab_43_ngovh?     @relation(fields: [fld_rl_ngovh], references: [fld_ngovh_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_43_ng_fk_tab_43_n_18cb6145")
-  tab_43_ngpv     tab_43_ngpv?      @relation(fields: [fld_rl_ngpv], references: [fld_ngpv_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_43_ng_fk_tab_43_n_7d6ab0f1")
-  tab_43_ngtp     tab_43_ngtp       @relation(fields: [fld_rl_ngtp], references: [fld_ngtp_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_43_ng_fk_tab_43_n_a1a9c151")
-  tab_43_ngfr     tab_43_ngfr       @relation(fields: [fld_rl_ngfr], references: [fld_ngfr_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_43_ng_fk_tab_43_n_a821c0ab")
-  tab_43_nggrup   tab_43_nggrup     @relation(fields: [fld_rl_nggrup], references: [fld_nggrup_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_43_ng_fk_tab_43_n_cbd5c598")
-  tab_46_classifi tab_46_classifi[]
-  tab_classifi    tab_classifi[]
+  fld_ng_seq        Int               @id @unique @default(autoincrement())
+  fld_rl_ngtp       Int
+  fld_rl_ngfr       Int
+  fld_rl_nggrup     Int
+  fld_rl_ngpv       Int?
+  fld_rl_ngovh      Int?
+  fld_ds_ng         String?           @db.VarChar(50)
+  fld_nm_ngpra      Int?
+  fld_dt_ng         DateTime?         @db.Date
+  fld_ds_ngobs      String?           @db.VarChar(60)
+  fld_nm_ngtransfer Float?
+  tab_43_nggrup     tab_43_nggrup     @relation(fields: [fld_rl_nggrup], references: [fld_nggrup_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_43_ng_fk_tab_43_n_cbd5c598")
+  tab_43_ngovh      tab_43_ngovh?     @relation(fields: [fld_rl_ngovh], references: [fld_ngovh_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_43_ng_fk_tab_43_n_18cb6145")
+  tab_43_ngfr       tab_43_ngfr       @relation(fields: [fld_rl_ngfr], references: [fld_ngfr_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_43_ng_fk_tab_43_n_a821c0ab")
+  tab_43_ngpv       tab_43_ngpv?      @relation(fields: [fld_rl_ngpv], references: [fld_ngpv_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_43_ng_fk_tab_43_n_7d6ab0f1")
+  tab_43_ngtp       tab_43_ngtp       @relation(fields: [fld_rl_ngtp], references: [fld_ngtp_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_43_ng_fk_tab_43_n_a1a9c151")
+  tab_46_classifi   tab_46_classifi[]
 }
 
 model tab_43_ngdsfx {
@@ -3900,7 +3821,7 @@ model tab_45_transa {
   fld_rl_transaopconh                                                       Int?
   fld_dt_transareg                                                          DateTime?            @db.Date
   fld_nm_transaid                                                           String?              @db.VarChar(12)
-  fld_ds_transaid                                                           String?              @db.VarChar(80)
+  fld_ds_transaid                                                           String?              @db.VarChar(100)
   fld_rl_transiclassi                                                       Int?
   fld_rl_transitipo                                                         Int?
   tab_45_transitipo                                                         tab_45_transitipo?   @relation(fields: [fld_rl_transitipo], references: [fld_seq_transitipo], onDelete: NoAction, onUpdate: NoAction, map: "tab_45_transa_fk_tab__059dbf80")
@@ -4056,7 +3977,6 @@ model tab_55_prod {
   tab_46_classifi    tab_46_classifi[]
   tab_01_empresa     tab_01_empresa?     @relation(fields: [fld_rl_prodempresa], references: [fld_emp_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_55_prod_fk_tab_01_2c10046f")
   tab_55_familiaprod tab_55_familiaprod? @relation(fields: [fld_rl_familiaprod], references: [fld_familiaprod_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_55_prod_fk_tab_55_54f074e8")
-  tab_classifi       tab_classifi[]
 }
 
 model tab_60_cargahh {
@@ -4072,7 +3992,7 @@ model tab_60_cargahh {
 }
 
 model tab_60_histograres {
-  fld_seq_histograres   Int                  @id @unique @default(autoincrement())
+  fld_seq_histograres   Int                 @id @default(autoincrement())
   fld_rl_prospec        Int?
   fld_rl_tipoinfoplan   Int
   fld_rl_contag         Int?
@@ -4080,37 +4000,33 @@ model tab_60_histograres {
   fld_rl_manuturno      Int?
   fld_rl_unidadetempo   Int?
   fld_rl_tipomaobra     Int?
-  fld_dt_histograresco  DateTime?            @db.Date
+  fld_dt_histograresco  DateTime?           @db.Date
   fld_nm_histograresht  Float?
   fld_nm_histograrescol Int?
-  fld_ds_histograresobs String?              @db.VarChar(100)
-  tab_01_unidadetempo   tab_01_unidadetempo? @relation(fields: [fld_rl_unidadetempo], references: [fld_unidadetempo_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_60_histograres_fk_020270ee")
-  tab_01_tipomaobra     tab_01_tipomaobra?   @relation(fields: [fld_rl_tipomaobra], references: [fld_tipomaobra_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_60_histograres_fk_2998a888")
-  tab_09_comtag         tab_09_comtag?       @relation(fields: [fld_rl_contag], references: [fld_sq_comtag], onDelete: NoAction, onUpdate: NoAction, map: "tab_60_histograres_fk_341844f8")
-  tab_01_crcolabora     tab_01_crcolabora?   @relation(fields: [fld_rl_crcolabora], references: [fld_crcolabora_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_60_histograres_fk_3eb2409e")
-  tab_06_prospect       tab_06_prospect?     @relation(fields: [fld_rl_prospec], references: [fld_prospec_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_60_histograres_fk_d1b82ab5")
-  tab_01_manuturno      tab_01_manuturno?    @relation(fields: [fld_rl_manuturno], references: [fld_manuturno_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_60_histograres_fk_e5744b70")
-  tab_90_tipoinfoplan   tab_90_tipoinfoplan  @relation(fields: [fld_rl_tipoinfoplan], references: [fld_tipoinfoplan_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_60_histograres_fk_f691d93f")
+  fld_ds_histograresobs String?             @db.VarChar(100)
+  tab_09_comtag         tab_09_comtag?      @relation(fields: [fld_rl_contag], references: [fld_sq_comtag], onDelete: NoAction, onUpdate: NoAction, map: "tab_60_histograres_fk_341844f8")
+  tab_01_crcolabora     tab_01_crcolabora?  @relation(fields: [fld_rl_crcolabora], references: [fld_crcolabora_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_60_histograres_fk_3eb2409e")
+  tab_06_prospect       tab_06_prospect?    @relation(fields: [fld_rl_prospec], references: [fld_prospec_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_60_histograres_fk_d1b82ab5")
+  tab_90_tipoinfoplan   tab_90_tipoinfoplan @relation(fields: [fld_rl_tipoinfoplan], references: [fld_tipoinfoplan_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_60_histograres_fk_f691d93f")
 }
 
 model tab_88_tconfig {
-  fld_sq_tconfig            Int                   @id @unique @default(autoincrement())
-  fld_dt_tconfigreg         DateTime              @db.Date
-  fld_hh_tconfigqthdpj      DateTime              @db.Time(6)
-  fld_hh_tconfigqthdclt     DateTime              @db.Time(6)
-  fld_hh_tconfigttmespj     DateTime              @db.Time(6)
-  fld_hh_tconfigttmesclt    DateTime              @db.Time(6)
-  fld_ds_tconfigfepj        String                @db.VarChar(1)
-  fld_ds_tconfigfeclt       String                @db.VarChar(1)
-  fld_ds_tconfigsabpj       String                @db.VarChar(1)
-  fld_ds_tconfigsabclt      String                @db.VarChar(1)
-  fld_ds_tconfigdompj       String                @db.VarChar(1)
-  fld_ds_tconfigdomclt      String                @db.VarChar(1)
-  fld_ds_tconfigdiafecha    String                @db.VarChar(2)
-  fld_ds_tconfigantesfecha  String                @db.VarChar(1)
-  fld_ds_tconfigtxtfecha    String?               @db.VarChar(80)
-  fld_ds_tconfigtxtavisoana String?               @db.VarChar(80)
-  tab_88_tconfigenvio       tab_88_tconfigenvio[]
+  fld_sq_tconfig            Int      @id @default(autoincrement())
+  fld_dt_tconfigreg         DateTime @db.Date
+  fld_hh_tconfigqthdpj      DateTime @db.Time(6)
+  fld_hh_tconfigqthdclt     DateTime @db.Time(6)
+  fld_hh_tconfigttmespj     Int
+  fld_hh_tconfigttmesclt    Int
+  fld_ds_tconfigfepj        String   @db.VarChar(1)
+  fld_ds_tconfigfeclt       String   @db.VarChar(1)
+  fld_ds_tconfigsabpj       String   @db.VarChar(1)
+  fld_ds_tconfigsabclt      String   @db.VarChar(1)
+  fld_ds_tconfigdompj       String   @db.VarChar(1)
+  fld_ds_tconfigdomclt      String   @db.VarChar(1)
+  fld_ds_tconfigdiafecha    String   @db.VarChar(2)
+  fld_ds_tconfigantesfecha  String   @db.VarChar(1)
+  fld_ds_tconfigtxtfecha    String?  @db.VarChar(80)
+  fld_ds_tconfigtxtavisoana String?  @db.VarChar(80)
 }
 
 model tab_88_tconfigenvio {
@@ -4120,7 +4036,6 @@ model tab_88_tconfigenvio {
   fld_ds_tconfigenvioe String          @db.VarChar(1)
   fld_ds_tconfigenvioz String          @db.VarChar(1)
   tab_01_colabora      tab_01_colabora @relation(fields: [fld_rl_colabora], references: [fld_colabo_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_88_tconfigenvio_f_37f6f09e")
-  tab_88_tconfig       tab_88_tconfig  @relation(fields: [fld_rl_tconfig], references: [fld_sq_tconfig], onDelete: NoAction, onUpdate: NoAction, map: "tab_88_tconfigenvio_f_fcd4bd80")
 }
 
 model tab_88_tsoli {
@@ -4134,10 +4049,12 @@ model tab_88_tsoli {
   fld_dt_tsoliapro  DateTime?         @db.Date
   fld_dt_tsolirepro DateTime?         @db.Date
   fld_ds_tsolirepro String?           @db.VarChar(120)
+  fld_ds_tsolienvio Int?
+  tab_88_tlanca     tab_88_tlanca[]
+  tab_01_ccrel      tab_01_ccrel?     @relation(fields: [fld_rl_ccrel], references: [fld_ccrel_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_88_tsoli_fk_tab_0_a05f62eb")
   tab_01_colaborpj  tab_01_colaborpj? @relation(fields: [fld_rl_colaborpj], references: [fld_seq_colaborpj], onDelete: NoAction, onUpdate: NoAction, map: "tab_88_tsoli_fk_tab_0_0e497df1")
   tab_06_prospect   tab_06_prospect?  @relation(fields: [fld_rl_prospect], references: [fld_prospec_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_88_tsoli_fk_tab_0_43f9e66d")
   tab_01_colabora   tab_01_colabora?  @relation(fields: [fld_rl_colabora], references: [fld_colabo_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_88_tsoli_fk_tab_0_87781851")
-  tab_01_ccrel      tab_01_ccrel?     @relation(fields: [fld_rl_ccrel], references: [fld_ccrel_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_88_tsoli_fk_tab_0_a05f62eb")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -4241,10 +4158,6 @@ model tab_95_eacpad {
   tab_95_eacforap                                                tab_95_eacforap   @relation(fields: [fld_rl_eacforap], references: [fld_eacforap_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_95_eacpad_fk_tab__5be753ab")
   tab_95_eacclas                                                 tab_95_eacclas    @relation(fields: [fld_rl_eacclas], references: [fld_eacclas_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_95_eacpad_fk_tab__c2512d61")
   tab_95_eacpv                                                   tab_95_eacpv[]
-  tab_classifi_tab_classifi_fld_rl_eacpad_aTotab_95_eacpad       tab_classifi[]    @relation("tab_classifi_fld_rl_eacpad_aTotab_95_eacpad")
-  tab_classifi_tab_classifi_fld_rl_eacpad_sTotab_95_eacpad       tab_classifi[]    @relation("tab_classifi_fld_rl_eacpad_sTotab_95_eacpad")
-
-  @@unique([fld_nm_eac, fld_nm_eacpaditem], map: "tab_95_eacpad_fld_nm_eacpaditem_key")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -4287,7 +4200,7 @@ model tab_95_eacpvitem {
   fld_dt_eacitemdt  DateTime     @db.Date
   fld_ds_eacitemhis String       @db.VarChar(250)
   fld_vl_eacitemvl  Float
-  fld_nm_eacitemqt  Int
+  fld_nm_eacitemqt  Float
   fld_rl_eacpv      Int
   tab_95_eacpv      tab_95_eacpv @relation(fields: [fld_rl_eacpv], references: [fld_eacpv_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_95_eacpvitem_fk_t_5cda5dd3")
 }
@@ -4359,24 +4272,23 @@ model tab_99_flcx {
   fld_nm_flcxpagval     Float?
   fld_nm_flcxprevcpeval Float?
   fld_nm_flcxddaval     Float?
-  fld_dt_inicial        DateTime? @db.Date
   fld_dt_final          DateTime? @db.Date
+  fld_dt_inicial        DateTime? @db.Date
 }
 
 model tab_99_flcxconta {
-  fld_sq_flcxconta     Int                  @id @unique @default(autoincrement())
+  fld_sq_flcxconta     Int                @id @unique @default(autoincrement())
   fld_rl_flcxentfin    Int
   fld_rl_flcxcontatp   Int
-  fld_ds_flcxcontagen  String               @db.VarChar(12)
-  fld_ds_flcxcontaid   String               @db.VarChar(18)
-  fld_ds_flcxcontatit  String               @db.VarChar(120)
-  fld_dt_flcxcontab    DateTime             @db.Date
-  fld_dt_flcxcontae    DateTime?            @db.Date
+  fld_ds_flcxcontagen  String             @db.VarChar(12)
+  fld_ds_flcxcontaid   String             @db.VarChar(18)
+  fld_ds_flcxcontatit  String             @db.VarChar(120)
+  fld_dt_flcxcontab    DateTime           @db.Date
+  fld_dt_flcxcontae    DateTime?          @db.Date
   fld_nm_flcxcontvluni Float?
-  fld_ds_flcxcontapeli String?              @db.VarChar(22)
-  tab_99_flcxcontatp   tab_99_flcxcontatp   @relation(fields: [fld_rl_flcxcontatp], references: [fld_sq_flcxcontatp], onDelete: NoAction, onUpdate: NoAction, map: "tab_99_flcxconta_fk_t_6fef79c1")
-  tab_99_flcxentfin    tab_99_flcxentfin    @relation(fields: [fld_rl_flcxentfin], references: [fld_sq_flcxentfin], onDelete: NoAction, onUpdate: NoAction, map: "tab_99_flcxconta_fk_t_bd1508f9")
-  tab_99_flcxextrato   tab_99_flcxextrato[]
+  fld_ds_flcxcontapeli String?            @db.VarChar(22)
+  tab_99_flcxcontatp   tab_99_flcxcontatp @relation(fields: [fld_rl_flcxcontatp], references: [fld_sq_flcxcontatp], onDelete: NoAction, onUpdate: NoAction, map: "tab_99_flcxconta_fk_t_6fef79c1")
+  tab_99_flcxentfin    tab_99_flcxentfin  @relation(fields: [fld_rl_flcxentfin], references: [fld_sq_flcxentfin], onDelete: NoAction, onUpdate: NoAction, map: "tab_99_flcxconta_fk_t_bd1508f9")
 }
 
 model tab_99_flcxcontatp {
@@ -4388,8 +4300,8 @@ model tab_99_flcxcontatp {
 model tab_99_flcxentfin {
   fld_sq_flcxentfin   Int                @id @unique @default(autoincrement())
   fld_ds_flcxentfincd String             @unique(map: "unique_fld_ds_flcxentfincd") @db.VarChar(8)
-  fld_ds_flcxentfinm  String             @db.VarChar(80)
   fld_dt_flcxentfindt DateTime           @db.Date
+  fld_ds_flcxentfinm  String             @db.VarChar(80)
   tab_99_flcxconta    tab_99_flcxconta[]
 }
 
@@ -4402,7 +4314,6 @@ model tab_99_flcxextrato {
   fld_ds_flcxextratohisto String?           @db.VarChar(30)
   fld_nm_flcxextratovalor Float?
   tab_99_flcxmovitp       tab_99_flcxmovitp @relation(fields: [fld_rl_flcxmovitp], references: [fld_sq_flcxmovitp], onDelete: NoAction, onUpdate: NoAction, map: "tab_99_flcxextrato_fk_20bc5f34")
-  tab_99_flcxconta        tab_99_flcxconta  @relation(fields: [fld_rl_flcxconta], references: [fld_sq_flcxconta], onDelete: NoAction, onUpdate: NoAction, map: "tab_99_flcxextrato_fk_c0f72a02")
 }
 
 model tab_99_flcxmovitp {
@@ -4412,102 +4323,12 @@ model tab_99_flcxmovitp {
   tab_99_flcxextrato  tab_99_flcxextrato[]
 }
 
-model tab_classifi {
-  fld_classifi_seq                                          Int            @id @unique @default(autoincrement())
-  fld_rl_prod                                               Int?
-  fld_rl_ng                                                 Int?
-  fld_rl_eacpad_s                                           Int?
-  fld_rl_eacpad_a                                           Int?
-  fld_ds_classifiobs                                        String?        @db.VarChar(80)
-  fld_ds_classifiregori                                     String?        @db.VarChar(7)
-  fld_ds_classifi_ctrl1                                     String?        @db.VarChar(1)
-  fld_dt_classireg                                          DateTime?      @db.Date
-  tab_43_ng                                                 tab_43_ng?     @relation(fields: [fld_rl_ng], references: [fld_ng_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_classifi_fk_tab_4_39828246")
-  tab_55_prod                                               tab_55_prod?   @relation(fields: [fld_rl_prod], references: [fld_prod_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_classifi_fk_tab_5_2270285d")
-  tab_95_eacpad_tab_classifi_fld_rl_eacpad_aTotab_95_eacpad tab_95_eacpad? @relation("tab_classifi_fld_rl_eacpad_aTotab_95_eacpad", fields: [fld_rl_eacpad_a], references: [fld_eacpad_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_classifi_fk_tab_9_96ef6a07")
-  tab_95_eacpad_tab_classifi_fld_rl_eacpad_sTotab_95_eacpad tab_95_eacpad? @relation("tab_classifi_fld_rl_eacpad_sTotab_95_eacpad", fields: [fld_rl_eacpad_s], references: [fld_eacpad_seq], onDelete: NoAction, onUpdate: NoAction, map: "tab_classifi_fk_tab_9_caa4451e")
-}
-
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model tab_docref {
   id_pasta String? @db.VarChar(5)
   doc_ref  String? @db.VarChar(35)
 
   @@ignore
-}
-
-model tab_note {
-  tqp_note_id                                        Int             @id @unique(map: "tab_note_tqp_299_id_key") @default(autoincrement())
-  fld_placa_video                                    String          @db.VarChar(20)
-  fld__logo_empresa                                  Bytes?
-  fld__ram                                           String?         @db.VarChar(20)
-  fld__tamanho_do_armazenamento                      String?         @db.VarChar(32)
-  fld__armazenamento                                 String?         @db.VarChar(20)
-  fld__processador                                   String?         @db.VarChar(20)
-  fld__fabricante                                    String?         @db.VarChar(20)
-  fld__modelo                                        String?         @db.VarChar(20)
-  fld__foto                                          Bytes?
-  fld__cliente                                       Int?
-  tab_notebooks_tab_note_fld__clienteTotab_notebooks tab_notebooks?  @relation("tab_note_fld__clienteTotab_notebooks", fields: [fld__cliente], references: [tqp_notebooks_id], onDelete: NoAction, onUpdate: NoAction, map: "tab_note_fk_tab_noteb_430f6c54")
-  tab_notebooks_tab_notebooks_fld_rl_noteTotab_note  tab_notebooks[] @relation("tab_notebooks_fld_rl_noteTotab_note")
-  tab_servicos                                       tab_servicos[]
-}
-
-model tab_notebooks {
-  tqp_notebooks_id                                          Int            @id @unique(map: "tab_notebooks_tqp_299_id_key") @default(autoincrement())
-  fld_nome                                                  String?        @db.VarChar(83)
-  fld__cpf                                                  String?        @db.VarChar(33)
-  fld__data_de_cadastro                                     String?        @db.VarChar(29)
-  fld__telefone                                             String?        @db.VarChar(36)
-  fld__cep                                                  String?        @db.VarChar(20)
-  fld__logradouro                                           String?        @db.VarChar(110)
-  fld__bairro                                               String?        @db.VarChar(49)
-  fld__cidade                                               String?        @db.VarChar(49)
-  fld__uf                                                   String?        @db.VarChar(12)
-  fld_ig_logo                                               Bytes?
-  fld_ig_foto                                               Bytes?
-  fld_rl_servicos                                           Int?
-  fld_rl_note                                               Int?
-  tab_note_tab_note_fld__clienteTotab_notebooks             tab_note[]     @relation("tab_note_fld__clienteTotab_notebooks")
-  tab_note_tab_notebooks_fld_rl_noteTotab_note              tab_note?      @relation("tab_notebooks_fld_rl_noteTotab_note", fields: [fld_rl_note], references: [tqp_note_id], onDelete: NoAction, onUpdate: NoAction, map: "tab_note_fk")
-  tab_servicos_tab_notebooks_fld_rl_servicosTotab_servicos  tab_servicos?  @relation("tab_notebooks_fld_rl_servicosTotab_servicos", fields: [fld_rl_servicos], references: [tqp_servicos_id], onDelete: NoAction, onUpdate: NoAction, map: "tab_servicos_fk")
-  tab_servicos_tab_servicos_tqp_notebooks_idTotab_notebooks tab_servicos[] @relation("tab_servicos_tqp_notebooks_idTotab_notebooks")
-}
-
-model tab_sechrcr {
-  fld_sechrcc_seq Int      @id @unique @default(autoincrement())
-  fld_hh_sechrcc  DateTime @db.Time(6)
-}
-
-model tab_servico_valor {
-  tqp_valor_servico_id Int            @id @unique(map: "tab_servico_valor_tqp_valor_servio_id_key") @default(autoincrement())
-  fld_servico          String?        @db.VarChar(62)
-  fld_valor            Float?
-  tab_servicos         tab_servicos[]
-}
-
-model tab_servicos {
-  tqp_servicos_id                                            Int                @id @unique(map: "tab_servicos_tqp_299_id_key") @default(autoincrement())
-  fld_servico                                                String             @db.VarChar(62)
-  fld_desconto                                               String?            @db.VarChar(20)
-  fld_cliente                                                Int?
-  fld_notebook                                               Int?
-  fld_subtotal                                               Float?
-  fld_total                                                  Float?
-  fld_valor                                                  Float?
-  fld_forma_pgto                                             String?            @db.VarChar(50)
-  fld_rl_tipo_servico                                        Int?
-  fld_data_e_hora_do_pedido                                  DateTime?          @db.Date
-  fld_data_e_hora_previsto                                   DateTime?          @db.Date
-  tqp_servicos_id_servico                                    Int?
-  tqp_notebooks_id                                           Int?
-  tqp_note_id                                                Int?
-  tab_notebooks_tab_notebooks_fld_rl_servicosTotab_servicos  tab_notebooks[]    @relation("tab_notebooks_fld_rl_servicosTotab_servicos")
-  tab_notebooks_tab_servicos_tqp_notebooks_idTotab_notebooks tab_notebooks?     @relation("tab_servicos_tqp_notebooks_idTotab_notebooks", fields: [tqp_notebooks_id], references: [tqp_notebooks_id], onDelete: NoAction, onUpdate: NoAction, map: "tab_servicos_fk_tab_n_d2e90537")
-  tab_note                                                   tab_note?          @relation(fields: [tqp_note_id], references: [tqp_note_id], onDelete: NoAction, onUpdate: NoAction, map: "tab_servicos_fk_tab_n_e0f3e473")
-  tab_servicos                                               tab_servicos?      @relation("tab_servicosTotab_servicos", fields: [tqp_servicos_id_servico], references: [tqp_servicos_id], onDelete: NoAction, onUpdate: NoAction, map: "tab_servicos_fk_tab_s_c2d9af78")
-  other_tab_servicos                                         tab_servicos[]     @relation("tab_servicosTotab_servicos")
-  tab_servico_valor                                          tab_servico_valor? @relation(fields: [fld_rl_tipo_servico], references: [tqp_valor_servico_id], onDelete: NoAction, onUpdate: NoAction, map: "tab_vlr_servico_fk")
 }
 
 model tab_situacao_atual {
@@ -4534,68 +4355,109 @@ model tab_temp_ctptane {
   fld_dt_inc               DateTime? @default(now()) @db.Timestamptz(6)
 }
 
-model tabelatemp {
-  tqp_id_matrix  Int       @id(map: "tab_tpqtabelatemp_pkey") @default(autoincrement())
-  fld_dt_inicial DateTime? @db.Date
-  fld_dt_final   DateTime? @db.Date
-  id             Int?
-  data           DateTime? @db.Date
-  origem         String?   @db.VarChar(10)
-  favorecido     String?   @db.VarChar(255)
-  categoria      String?   @db.VarChar(255)
-  conta          String?   @db.VarChar(255)
-  documento      String?   @db.VarChar(255)
-  historico      String?   @db.VarChar(255)
-  cc             String?   @db.VarChar(255)
-  agencia        String?   @db.VarChar(255)
-  banco          String?   @db.VarChar(255)
-  ccorrente      String?   @db.VarChar(20)
-  dtvencimento   DateTime? @db.Date
-  parcela        String?   @db.VarChar(10)
-  valororiginal  Float?
-  valor          Float?
-  desconto       Float?
-  acrecimo       Float?
-  valorpago      Float?
-  dtpagamento    DateTime? @db.Date
-  pago           Boolean?
-  movcaixa       Boolean?
-  movbanco       Boolean?
-  valortotal     Float?
-  chave          String?   @db.VarChar(20)
-  alfa           String?
-  select         Boolean?
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model tab_37_pen_bkp {
+  fld_sq_pen            Int?
+  fld_rl_prospec        Int?
+  fld_rl_penslapri      Int?
+  fld_rl_pentipo        Int?
+  fld_rl_comdisciop     Int?
+  fld_rl_compasta       Int?
+  fld_rl_contag         Int?
+  fld_nm_pen            String?   @db.VarChar(20)
+  fld_dt_pendtreg       DateTime? @db.Date
+  fld_dt_pendtprev      DateTime? @db.Date
+  fld_dt_pendtconc      DateTime? @db.Date
+  fld_dt_penrt          DateTime? @db.Date
+  fld_ds_pen            String?   @db.VarChar(180)
+  fld_ds_penoc          String?   @db.VarChar(22)
+  fld_ds_penmat         String?   @db.VarChar(35)
+  fld_ds_penimpac       String?   @db.VarChar(30)
+  fld_ds_pendescrt      String?   @db.VarChar(120)
+  fld_rl_sqcolaborade   Int?
+  fld_rl_sqcolaborapara Int?
+  fld_ds_penobs         String?   @db.VarChar(80)
+  fld_dt_en             DateTime? @db.Date
+  fld_dt_ende           DateTime? @db.Date
+
+  @@ignore
 }
 
-model tbllancamento {
-  tqp_id_matrix  Int       @id(map: "tab_tpqmatrix_pkey") @default(autoincrement())
-  fld_dt_inicial DateTime? @db.Date
-  fld_dt_final   DateTime? @db.Date
-  id             Int?
-  data           DateTime? @db.Date
-  origem         String?
-  favorecido     String?   @db.VarChar(255)
-  categoria      String?   @db.VarChar(255)
-  conta          String?   @db.VarChar(255)
-  documento      String?   @db.VarChar(255)
-  historico      String?   @db.VarChar(255)
-  cc             String?   @db.VarChar(255)
-  agencia        String?   @db.VarChar(255)
-  banco          String?   @db.VarChar(255)
-  ccorrente      String?   @db.VarChar(20)
-  dtvencimento   DateTime? @db.Date
-  parcela        String?   @db.VarChar(10)
-  valororiginal  Float?
-  valor          Float?
-  desconto       Float?
-  acrecimo       Float?
-  valorpago      Float?
-  dtpagamento    DateTime? @db.Date
-  pago           Boolean?
-  movcaixa       Boolean?
-  movbanco       Boolean?
-  valortotal     Float?
-  chave          String?   @db.VarChar(20)
-  alfa           String?
-  select         Boolean?
+model tab_41_pvicfor {
+  fld_pvicfor_seq Int    @id @unique @default(autoincrement())
+  fld_ds_pvicfor  String @db.VarChar(15)
+}
+
+model tab_41_pvicftipos {
+  fld_pvicftipos_seq Int          @id @unique @default(autoincrement())
+  fld_ds_pvicftipos  String       @db.VarChar(15)
+  tab_41_pvi         tab_41_pvi[]
+}
+
+model tab_88_tlanca {
+  fld_sq_tlanca       Int          @id @default(autoincrement())
+  fld_dt_tlanca       DateTime     @default(dbgenerated("CURRENT_DATE")) @db.Date
+  fld_dt_tlancarg     DateTime     @db.Date
+  fld_ds_tlancatp     String       @db.VarChar(1)
+  fld_rl_tsoli        Int
+  fld_hh_tlancahora   DateTime     @db.Time(6)
+  fld_ds_tlancati     String?      @db.VarChar(120)
+  fld_dt_tlancafecha  DateTime?    @db.Date
+  fld_dt_tlancarec    DateTime?    @db.Date
+  fld_ds_tlancamotrec String?      @db.VarChar(120)
+  tab_88_tsoli        tab_88_tsoli @relation(fields: [fld_rl_tsoli], references: [fld_sq_tsoli], onDelete: NoAction, onUpdate: NoAction, map: "tab_88_tlanca_solic")
+
+  @@unique([fld_dt_tlancarg, fld_rl_tsoli], map: "tab_88_tlanca_dt_solicitacao")
+}
+
+model tab_90_eappvtest {
+  fld_eappv_seq       Int       @id
+  fld_nm_eappvpai     Int?
+  fld_nm_eappv        String?   @db.VarChar(20)
+  fld_ds_eappv        String?   @db.VarChar(45)
+  fld_nm_eappvpon     Int?
+  fld_nm_eappvpe      Float?
+  fld_nm_eappvsld     Int?
+  fld_nm_eappvvl      Decimal?  @db.Decimal(18, 2)
+  fld_dt_eappvdt      DateTime? @db.Date
+  fld_nm_eappvdias    Int?
+  fld_rl_prospect     Int?
+  fld_nm_eappvperger  Float?
+  fld_nm_eappvcontpai Int?
+  fld_nm_eappvad      Int?
+  cd1                 Int?
+  cd2                 Int?
+  cd3                 Int?
+  cd4                 Int?
+  cd5                 Int?
+  vl01                Decimal?  @db.Decimal(16, 2)
+  vl02                Decimal?  @db.Decimal(16, 2)
+  vl03                Decimal?  @db.Decimal(16, 2)
+  vl04                Decimal?  @db.Decimal(16, 2)
+  vl05                Decimal?  @db.Decimal(16, 2)
+  vl06                Decimal?  @db.Decimal(16, 2)
+  vl07                Decimal?  @db.Decimal(16, 2)
+  vl08                Decimal?  @db.Decimal(16, 2)
+  vl09                Decimal?  @db.Decimal(16, 2)
+  vl10                Decimal?  @db.Decimal(16, 2)
+  vl11                Decimal?  @db.Decimal(16, 2)
+  vl12                Decimal?  @db.Decimal(16, 2)
+  vl13                Decimal?  @db.Decimal(16, 2)
+  vl14                Decimal?  @db.Decimal(16, 2)
+  vl15                Decimal?  @db.Decimal(16, 2)
+  vl16                Decimal?  @db.Decimal(16, 2)
+  vl17                Decimal?  @db.Decimal(16, 2)
+  vl18                Decimal?  @db.Decimal(16, 2)
+  vl19                Decimal?  @db.Decimal(16, 2)
+  vl20                Decimal?  @db.Decimal(16, 2)
+  vl21                Decimal?  @db.Decimal(16, 2)
+  vl22                Decimal?  @db.Decimal(16, 2)
+  vl23                Decimal?  @db.Decimal(16, 2)
+  vl24                Decimal?  @db.Decimal(16, 2)
+  vl25                Decimal?  @db.Decimal(16, 2)
+  vl26                Decimal?  @db.Decimal(16, 2)
+  vl27                Decimal?  @db.Decimal(16, 2)
+  vl28                Decimal?  @db.Decimal(16, 2)
+  vl29                Decimal?  @db.Decimal(16, 2)
+  vl30                Decimal?  @db.Decimal(16, 2)
 }
