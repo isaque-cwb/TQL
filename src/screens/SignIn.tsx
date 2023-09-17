@@ -27,14 +27,11 @@ export function SignIn() {
     } else {
 
       setIsLoading(true)
-      const response = await api.post('/user', {
-        usr_login: user
-      }).then((response) => {
+      const response = await api.post(`/Fuser.rule?sys=MOB&usr_login=${user}`).then((response) => {
 
         const data = response.data
 
         const hash = crypto.MD5(data.usr_codigo + password).toString()
-
 
         if (hash === data.usr_senha) {
 

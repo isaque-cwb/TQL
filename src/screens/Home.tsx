@@ -105,7 +105,7 @@ export function Home() {
 
   //carregamento de pvs
   useEffect(() => {
-    api.get('/prospect').then((response) => {
+    api.get('/Fprospect.rule?action=open&sys=MOB').then((response) => {
       const data = response.data
       const pvsData = data.map((item: prospectProps) => {
         const pvCliente = item.pvCliente
@@ -135,7 +135,7 @@ export function Home() {
   //carregamento de Centro de custo
   useEffect(() => {
 
-    api.get('/cc').then((response) => {
+    api.get('/Fcc.rule?action=open&sys=MOB').then((response) => {
       const data = response.data
       const ccData = data.map((item: ccProps) => {
         const cc = item.cc
@@ -155,7 +155,7 @@ export function Home() {
 
   //Carregamento de Solicitações
   useEffect(() => {
-    api.get('/soli').then((response) => {
+    api.get('/Fsoli.rule?action=open&sys=MOB').then((response) => {
       const data = response.data
       const soliData = data.map((item: soliProps) => {
         const idSoli = item.idSoli
@@ -233,13 +233,7 @@ export function Home() {
     }
 
 
-    api.post('time-sheet/create', {
-      fld_dt_tlanca: dataRegFormat,
-      fld_dt_tlancarg: date,
-      fld_ds_tlancatp: "1",
-      fld_rl_tsoli: filteredSoli[0].idSoli,
-      fld_hh_tlancahora: time
-    }).then(() => {
+    api.post(`/Ftimesheet-create.rule?action=open&sys=MOB&fld_dt_tlanca=${dataRegFormat}&fld_dt_tlancarg=${date}&fld_ds_tlancatp=1&fld_rl_tsoli=${filteredSoli[0].idSoli}&fld_hh_tlancahora=${time}`).then(() => {
       setCcSel('')
       setPvSel('')
       setDate('')
