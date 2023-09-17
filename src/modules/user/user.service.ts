@@ -53,7 +53,7 @@ export class UserService {
       usr_nome: user.usr_nome,
       usr_login: user.usr_login,
       usr_senha: user.usr_senha,
-      usr_celular: user.usr_celular,
+      usr_celular: user.usr_celular, 
       usr_email: user.usr_email,
       usr_foto: imageBase64,
       usr_codigo: user.usr_codigo
