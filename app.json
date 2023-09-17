@@ -9,8 +9,7 @@
     "splash": {
       "image": "./assets/tequaly.png",
       "resizeMode": "contain",
-      "backgroundColor": "#fff",
-      "": ""
+      "backgroundColor": "#fff"
     },
     "assetBundlePatterns": [
       "**/*"
