@@ -39,6 +39,14 @@ type soliProps = {
   idCC: string
 }
 
+type lancaProps = {
+  idLanca: number,
+  dtLanca: string,
+  dtRegLanca: string,
+  rlIdSoli: number,
+  hrLanca: string
+}
+
 
 
 export function Home() {
@@ -59,6 +67,8 @@ export function Home() {
   const { colors } = useTheme()
   const [isLoading, setIsLoading] = useState(false)
   const [idSoli, setIdSoli] = useState(null)
+  const [tConfig, setTConfig] = useState({})
+  const [lanca, setLanca] = useState([])
 
 
 
@@ -173,6 +183,43 @@ export function Home() {
 
   }, [])
 
+  //Carregamento de Configurações do TimeSheet
+  useEffect(() => {
+    api.get('/Ftconfig.rule?sys=MOB').then((response) => {
+      const data = response.data
+      setTConfig(
+        {
+          seqTconfig: data.seqTconfig,
+          QtDiaPJ: data.QtDiaPJ,
+          qtDiaCLT: data.qtDiaCLT,
+          qtMesPJ: data.qtMesPJ,
+          qtMesCLT: data.qtMesCLT
+        }
+      )
+
+    })
+
+  }, [])
+
+  //Carregamento de Lançamentos
+  useEffect(() => {
+    api.get('/Ftlanca.rule?sys=MOB').then((response) => {
+      const data = response.data
+      const lanca = data.map((item: lancaProps) => {
+        return {
+          idLanca: item.idLanca,
+          dtLanca: item.dtLanca,
+          dtRegLanca: item.dtRegLanca,
+          rlIdSoli: item.rlIdSoli,
+          hrLanca: item.hrLanca
+        }
+      })
+
+      setLanca(lanca)
+    })
+
+  }, [])
+
   //filtrando o pv com o usuário logado
   const filteredPv = pvs.filter(item => {
     if (userData.usr_codigo !== '') {
@@ -191,6 +238,12 @@ export function Home() {
     }
     return false; // Não Retorna itens se nenhum PV/Cliente foi selecionado
   });
+
+  //filtrando qtd de horas pela solicitação já filtrada
+
+  const qtdHorasFiltered = () => { }
+
+
 
 
 
@@ -233,6 +286,7 @@ export function Home() {
     }
 
 
+    //criando um novo lançamento 
     api.post(`/Ftimesheet-create.rule?action=open&sys=MOB&fld_dt_tlanca=${dataRegFormat}&fld_dt_tlancarg=${date}&fld_ds_tlancatp=1&fld_rl_tsoli=${filteredSoli[0].idSoli}&fld_hh_tlancahora=${time}`).then(() => {
       setCcSel('')
       setPvSel('')
