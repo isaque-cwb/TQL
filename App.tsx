@@ -25,7 +25,7 @@ export default function App() {
       {
         !fontsLoaded ? <Loading /> : <Routes />
       }
-      <StatusBar style="auto" />
+      <StatusBar style="light" translucent />
     </NativeBaseProvider>
   );
 }

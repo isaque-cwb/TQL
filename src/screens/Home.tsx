@@ -1,11 +1,8 @@
-import { useNavigation } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
 import { useEffect, useRef, useState } from 'react';
-import { Alert, StyleSheet, Text, View, ScrollView, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { Alert, StyleSheet, ScrollView, Text, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import { TextInput } from 'react-native-paper';
 import { TextInputMask } from 'react-native-masked-text';
-import { Center, useTheme, Button } from 'native-base';
+import { useTheme, Button } from 'native-base';
 import { Input as NBInput } from '../components/Input'
 import { Header } from '../components/Header';
 import { useUser } from '../contexts/auth';
@@ -19,9 +16,9 @@ type prospectProps = {
   idPV: string,
   pvCliente: string,
   idColabora: string,
-  colaborador: string,
-  matricula: string
-  CLTPJ: string
+  Colaborador: string,
+  Matrícula: string
+  "CLT/PJ": string
   idUsuario: string
 }
 
@@ -121,9 +118,9 @@ export function Home() {
         const pvCliente = item.pvCliente
         const idPV = item.idPV
         const idColabora = item.idColabora
-        const colaborador = item.colaborador
-        const matricula = item.matricula
-        const CLTPJ = item.CLTPJ
+        const colaborador = item.Colaborador
+        const matricula = item.Matrícula
+        const CLTPJ = item['CLT/PJ']
         const idUsuario = item.idUsuario
 
         return {
@@ -301,11 +298,16 @@ export function Home() {
 
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={styles.container}>
 
-        <Header title={' Apontamento'} />
-        <View  >
+
+    <View style={[styles.container]}>
+      {/*<KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>*/}
+      {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} style={{ flex: 1 }}> */}
+      <Header title={' Apontamento'} />
+
+      <ScrollView style={{ paddingLeft: '10%' }} >
+        {/* <View style={styles.container}> */}
+        <View style={styles.colaboradorContainer} >
           <Text style={styles.labelColabora}>Colaborador</Text>
           <NBInput
             fontSize={18}
@@ -318,7 +320,6 @@ export function Home() {
             editable={false}
 
           />
-
         </View>
 
         <View style={styles.dropContainer} >
@@ -409,45 +410,55 @@ export function Home() {
             maxLength={5}
           />
         </View>
+        <View style={styles.buttonContainer}>
 
-        <Button
-          h={50}
-          w={'90%'}
-          bgColor={colors.purple[300]}
-          _pressed={{ bg: colors.purple[100] }}
-          onPress={handleRegister}
+          <Button
+            h={50}
+            bgColor={colors.purple[300]}
+            _pressed={{ bg: colors.purple[100] }}
+            onPress={handleRegister}
 
-        >
-          {isLoading ? <Loading color={colors.white} bgColor={colors.purple[300]} /> : <Text style={{ fontSize: 20, color: 'white' }} >Registrar</Text>}
-        </Button>
-      </View >
-    </TouchableWithoutFeedback>
+          >
+            {isLoading ? <Loading color={colors.white} bgColor={colors.purple[300]} /> : <Text style={{ fontSize: 20, color: 'white' }} >Registrar</Text>}
+          </Button>
+        </View>
+
+        {/* </View > */}
+      </ScrollView >
+      {/* </TouchableWithoutFeedback> */}
+      {/* </KeyboardAvoidingView > */}
+    </View >
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    gap: 30,
     backgroundColor: '#fff',
-    paddingTop: 50,
-    alignItems: 'center'
+
+    // alignItems: 'center'
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
     marginTop: 80
   },
+  buttonContainer: {
+    marginTop: '10%',
+    width: '90%',
+  },
   button: {
     width: '90%',
-    height: 40
+    height: 40,
   },
   containerDrop: {
     backgroundColor: 'white',
     padding: 16,
+    marginTop: '10%',
   },
   dropContainer: {
-    width: '90%'
+    width: '90%',
+    marginTop: '10%',
   },
   dropdown: {
     height: 50,
@@ -504,6 +515,7 @@ const styles = StyleSheet.create({
     width: '90%',
     justifyContent: 'space-between',
     marginVertical: 5,
+    marginTop: '10%',
   },
   containerInputDate: {
     flexDirection: 'row',
@@ -514,6 +526,7 @@ const styles = StyleSheet.create({
     width: '90%',
     justifyContent: 'space-between',
     marginVertical: 5,
+    marginTop: '10%',
   },
   labelInputHour: {
     fontSize: 20,
@@ -538,10 +551,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     backgroundColor: '#fff'
   },
+  colaboradorContainer: {
+    marginTop: '5%',
+  },
   labelColabora: {
     fontSize: 20,
-
-
   },
 
 });
