@@ -38,13 +38,17 @@ export class TimeSheetService {
     qtdHoras.setHours(horas)
     qtdHoras.setMinutes(minutos)
 
+
+    const rlSoli = parseInt(createTimeSheetDto.fld_rl_tsoli)
+    
+
     const inserted = await this.prisma.tab_88_tlanca
       .create({
         data: {
           fld_dt_tlanca: dateNow,
           fld_dt_tlancarg: dataTrabalhada,
           fld_ds_tlancatp: '1',
-          fld_rl_tsoli: 8,
+          fld_rl_tsoli: rlSoli,
           fld_hh_tlancahora: qtdHoras
         }
       })
