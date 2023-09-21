@@ -25,6 +25,16 @@ export class TimeSheetController {
     return this.timeSheetService.findAll()
   }
 
+  @Get('tlanca')
+  findAllLanca(){
+    return this.timeSheetService.findAllLanca()
+  }
+
+  @Get('tconfig')
+  findTConfig(){
+    return this.timeSheetService.findTConfig()
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.timeSheetService.findOne(+id)
