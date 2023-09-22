@@ -18,7 +18,7 @@ type prospectProps = {
   idColabora: string,
   Colaborador: string,
   Matrícula: string
-  "CLT/PJ": string
+  CLTPJ: string
   idUsuario: string
 }
 
@@ -44,6 +44,14 @@ type lancaProps = {
   hrLanca: string
 }
 
+type tConfigProps = {
+  seqTconfig: number,
+  QtDiaPJ: string,
+  qtDiaCLT: string,
+  qtMesPJ: number,
+  qtMesCLT: number
+}
+
 
 
 export function Home() {
@@ -64,7 +72,7 @@ export function Home() {
   const { colors } = useTheme()
   const [isLoading, setIsLoading] = useState(false)
   const [idSoli, setIdSoli] = useState(null)
-  const [tConfig, setTConfig] = useState({})
+  const [tConfig, setTConfig] = useState({} as tConfigProps)
   const [lanca, setLanca] = useState([])
 
 
@@ -120,7 +128,7 @@ export function Home() {
         const idColabora = item.idColabora
         const colaborador = item.Colaborador
         const matricula = item.Matrícula
-        const CLTPJ = item['CLT/PJ']
+        const CLTPJ = item.CLTPJ
         const idUsuario = item.idUsuario
 
         return {
@@ -183,7 +191,7 @@ export function Home() {
   //Carregamento de Configurações do TimeSheet
   useEffect(() => {
     api.get('/Ftconfig.rule?sys=MOB').then((response) => {
-      const data = response.data
+      const data = response.data as tConfigProps
       setTConfig(
         {
           seqTconfig: data.seqTconfig,
@@ -199,7 +207,7 @@ export function Home() {
   }, [])
 
   //Carregamento de Lançamentos
-  useEffect(() => {
+  function carregarTlanca() {
     api.get('/Ftlanca.rule?sys=MOB').then((response) => {
       const data = response.data
       const lanca = data.map((item: lancaProps) => {
@@ -211,11 +219,11 @@ export function Home() {
           hrLanca: item.hrLanca
         }
       })
-
       setLanca(lanca)
     })
-
-  }, [])
+    // const qtd = calcularQtdHrDiaMes(lanca, tConfig)
+    //console.log('limpou')
+  }
 
   //filtrando o pv com o usuário logado
   const filteredPv = pvs.filter(item => {
@@ -237,8 +245,69 @@ export function Home() {
   });
 
   //filtrando qtd de horas pela solicitação já filtrada
+  //precisa receber como parâmetro o idSoli e também dataLanca como 
+  //string(que é  a variável dataRegFormat na hora de inserir)
+  function calcularQtdHrDiaMes(lanca: lancaProps[], tConfig: any, idSoli: number, date: string) {
 
-  const qtdHorasFiltered = () => { }
+    const configQtDisPJ = tConfig.QtDiaPJ
+    const configQtDiaCLT = tConfig.qtDiaCLT
+    const configQtMesCLT = tConfig.qtMesCLT
+    const configQtMesPJ = tConfig.qtMesPJ
+
+
+    // filtrando por dia
+    const lancaFilteredDia = lanca.filter(item => {
+      if (item.rlIdSoli == idSoli && item.dtRegLanca == date) {
+        return true
+      }
+      return false
+    })
+
+    const qtdHrDiaLanca = lancaFilteredDia.map(item => {
+
+      const horaSeparada = item.hrLanca.split(':')
+      const hora = parseInt(horaSeparada[0])
+      const minutos = parseInt(horaSeparada[1])
+      const horaParaMinutos = hora * 60
+      const horaInteiro = horaParaMinutos + minutos
+
+      return horaInteiro
+    })
+
+    //filtrando por Mês 
+    const lancaFilteredMes = lanca.filter(item => {
+      if (item.rlIdSoli == 21) {
+        return true
+      }
+      return false
+
+    })
+
+
+    const qtdHrMesLanca = lancaFilteredMes.map(item => {
+
+      const horaSeparada = item.hrLanca.split(':')
+      const hora = parseInt(horaSeparada[0])
+      const minutos = parseInt(horaSeparada[1])
+      const horaParaMinutos = hora * 60
+      const horaInteiro = horaParaMinutos + minutos
+
+      return horaInteiro
+
+    })
+
+
+
+
+
+    return {
+      qtdDia: qtdHrDiaLanca.reduce((acumulador, elemento) => { return acumulador + elemento }, 0),
+      qtdMes: qtdHrMesLanca.reduce((acumulador, elemento) => { return acumulador + elemento }, 0)
+    }
+
+
+
+  }
 
 
 
@@ -251,7 +320,7 @@ export function Home() {
     const [ano, mes, dia] = dataRegistro.split('-')
     const diaReg = dia.substring(0, 2)
     const dataRegFormat = `${diaReg}/${mes}/${ano}`
-
+    console.log(dataRegFormat)
     const filteredSoli = soli.filter(item => {
 
       if (pvSel !== '' && ccSel !== '') {
@@ -283,16 +352,58 @@ export function Home() {
     }
 
 
-    //criando um novo lançamento 
-    api.post(`/Ftimesheet-create.rule?action=open&sys=MOB&fld_dt_tlanca=${dataRegFormat}&fld_dt_tlancarg=${date}&fld_ds_tlancatp=1&fld_rl_tsoli=${filteredSoli[0].idSoli}&fld_hh_tlancahora=${time}`).then(() => {
-      setCcSel('')
-      setPvSel('')
-      setDate('')
-      setTime('')
-      Alert.alert('Apontamento Registrado com Sucesso!')
-    }).catch((error) => {
-      throw new Error('Erro Não foi possível registrar Apontamento')
-    })
+
+    //verificar se qtd de horas a lançar + qtd de horas já lançado
+    //é menor do que a quantidade de horas disponível por dia
+
+    //filtrando com o pv selecionado 
+    const filtro = filteredPv.filter(item => { if (item.idPV === pvSel) { return true } })
+    //pegar a qtd limite por dia e converter em inteiro de minutos
+    const qtdLimitePorDia = filtro[0].CLTPJ === 'CLT' ? tConfig.qtDiaCLT : tConfig.QtDiaPJ
+    const qtdLimHoraMin = qtdLimitePorDia.split(':')
+    const horaLim = parseInt(qtdLimHoraMin[0])
+    const minLim = parseInt(qtdLimHoraMin[1])
+    const qtdLimInt = horaLim * 60 + minLim
+
+    //pegar a qtd limite por mes
+    const qtdLimitePorMes = filtro[0].CLTPJ === 'CLT' ? tConfig.qtMesCLT : tConfig.qtMesPJ
+
+    //converter o time em uma variável number para comparar
+    const qtdHoraInformada = time
+    const horaInfomada = qtdHoraInformada.split(':')
+    const horaInfo = parseInt(horaInfomada[0])
+    const minInfo = parseInt(horaInfomada[1])
+    const qtdHoraInfo = horaInfo * 60 + minInfo
+
+    //carregar os lançamentos existentes
+    carregarTlanca()
+
+    //executa função para calcular lançamentos existentes
+    const qtd = calcularQtdHrDiaMes(lanca, tConfig, filteredSoli[0].idSoli, date)
+
+
+    //verificar se hora infomada + limite hora por dia é menor que o limite do dia 
+    if (qtdHoraInfo + qtd.qtdDia < qtdLimInt) {
+      //criando um novo lançamento
+      api.post(`/Ftimesheet-create.rule?action=open&sys=MOB&fld_dt_tlanca=${dataRegFormat}&fld_dt_tlancarg=${date}&fld_ds_tlancatp=1&fld_rl_tsoli=${filteredSoli[0].idSoli}&fld_hh_tlancahora=${time}`).then(() => {
+        setCcSel('')
+        setPvSel('')
+        setDate('')
+        setTime('')
+        Alert.alert('Apontamento Registrado com Sucesso!')
+      }).catch((error) => {
+        throw new Error('Erro Não foi possível registrar Apontamento')
+      })
+
+
+
+    } else {
+      Alert.alert('Não é possível realizar apontamento nesse dia', 'Qtd de Horas por dia Excedido.')
+    }
+
+
+
+
 
   }
 
