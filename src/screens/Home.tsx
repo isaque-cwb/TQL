@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Alert, StyleSheet, ScrollView, Text, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { TextInputMask } from 'react-native-masked-text';
-import { useTheme, Button } from 'native-base';
+import { useTheme, Button, Stack, } from 'native-base';
 import { Input as NBInput } from '../components/Input'
 import { Header } from '../components/Header';
 import { useUser } from '../contexts/auth';
@@ -384,6 +384,7 @@ export function Home() {
 
     //verificar se hora infomada + limite hora por dia é menor que o limite do dia 
     if (qtdHoraInfo + qtd.qtdDia < qtdLimInt) {
+      setIsLoading(true)
       //criando um novo lançamento
       api.post(`/Ftimesheet-create.rule?action=open&sys=MOB&fld_dt_tlanca=${dataRegFormat}&fld_dt_tlancarg=${date}&fld_ds_tlancatp=1&fld_rl_tsoli=${filteredSoli[0].idSoli}&fld_hh_tlancahora=${time}`).then(() => {
         setCcSel('')
@@ -391,13 +392,16 @@ export function Home() {
         setDate('')
         setTime('')
         Alert.alert('Apontamento Registrado com Sucesso!')
+        setIsLoading(false)
       }).catch((error) => {
+        setIsLoading(false)
         throw new Error('Erro Não foi possível registrar Apontamento')
       })
 
 
 
     } else {
+      setIsLoading(false)
       Alert.alert('Não é possível realizar apontamento nesse dia', 'Qtd de Horas por dia Excedido.')
     }
 
@@ -411,20 +415,19 @@ export function Home() {
   return (
 
 
-    <View style={[styles.container]}>
-      {/*<KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>*/}
-      {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} style={{ flex: 1 }}> */}
-      <Header title={' Apontamento'} />
+    <Stack style={styles.container}>
 
-      <ScrollView style={{ paddingLeft: '10%' }} >
+
+      <Header title={' Apontamento'} />
+      <ScrollView style={styles.scrolView} >
         {/* <View style={styles.container}> */}
-        <View style={styles.colaboradorContainer} >
+        <View >
           <Text style={styles.labelColabora}>Colaborador</Text>
           <NBInput
             fontSize={18}
             borderColor={'gray.300'}
             bgColor={'gray.100'}
-            width={'90%'}
+            width={'100%'}
             placeholder='Colaborador'
             onChangeText={setColaborador}
             value={userData.usr_nome}
@@ -496,7 +499,7 @@ export function Home() {
             value={date}
             onBlur={handleDateChange}
             onChangeText={setDate}
-            placeholder="dd/MM/yyyy"
+            placeholder="dd/mm/yyyy"
             keyboardType="numeric"
             maxLength={10}
             onFocus={() => { setDate('') }}
@@ -534,20 +537,25 @@ export function Home() {
           </Button>
         </View>
 
-        {/* </View > */}
       </ScrollView >
-      {/* </TouchableWithoutFeedback> */}
-      {/* </KeyboardAvoidingView > */}
-    </View >
+
+
+    </Stack >
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+
     flex: 1,
     backgroundColor: '#fff',
 
     // alignItems: 'center'
+  },
+  scrolView: {
+    flex: 1,
+    paddingHorizontal: '3%',
+    paddingTop: '10%',
   },
   title: {
     fontSize: 22,
@@ -555,11 +563,12 @@ const styles = StyleSheet.create({
     marginTop: 80
   },
   buttonContainer: {
-    marginTop: '10%',
-    width: '90%',
+    marginTop: '15%',
+    width: '100%',
+    marginBottom: '15%'
   },
   button: {
-    width: '90%',
+    width: '100%',
     height: 40,
   },
   containerDrop: {
@@ -568,7 +577,8 @@ const styles = StyleSheet.create({
     marginTop: '10%',
   },
   dropContainer: {
-    width: '90%',
+
+    width: '100%',
     marginTop: '10%',
   },
   dropdown: {
@@ -608,7 +618,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   input: {
-    width: '90%',
+    width: '100%',
     marginVertical: 5,
   },
   labelDrop: {
@@ -623,7 +633,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 5,
     borderRadius: 5,
-    width: '90%',
+    width: '100%',
     justifyContent: 'space-between',
     marginVertical: 5,
     marginTop: '10%',
@@ -634,10 +644,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 5,
     borderRadius: 5,
-    width: '90%',
+    width: '100%',
     justifyContent: 'space-between',
     marginVertical: 5,
-    marginTop: '10%',
+    marginTop: '12%',
   },
   labelInputHour: {
     fontSize: 20,

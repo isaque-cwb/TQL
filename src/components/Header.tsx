@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
 import { IconButton, useTheme, Heading, StyledProps, HStack, Avatar, VStack, Center, Stack, Pressable, Alert, Flex } from 'native-base'
-import { CaretLeft, UserCircle } from 'phosphor-react-native'
+import { SignOut, UserCircle } from 'phosphor-react-native'
 import LogoBranca from '../assets/logoBranca.svg'
 import { Image, Text } from 'react-native'
 import { useUser } from '../contexts/auth'
@@ -55,7 +55,7 @@ export function Header({ title, ...rest }: Props) {
           <IconButton
             height={60}
             width={60}
-            icon={<CaretLeft color={colors.gray[500]} size={24} />} onPress={handleGoBack} />
+            icon={<SignOut color={colors.gray[500]} size={24} />} onPress={handleGoBack} />
           <Heading color={'gray.100'} textAlign={'center'} fontSize={'lg'} flex={1} ml={-10} >
             Time Sheet -
             {title}
