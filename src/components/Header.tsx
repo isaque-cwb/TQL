@@ -42,26 +42,27 @@ export function Header({ title, ...rest }: Props) {
           >{userData.usr_nome} </Text >
         </Stack>
       </HStack>
-      <Pressable
+      <HStack
         w={'full'}
-
-        onPress={handleGoBack}
+        justifyContent={'space-between'}
+        alignItems={'center'}
       >
-        <HStack
+        <Heading color={'gray.100'} textAlign={'center'} fontSize={'lg'} ml={'18%'}  >
+          Time Sheet -
+          {title}
+        </Heading>
+        <Pressable
           w={'full'}
-          justifyContent={'space-between'}
-          alignItems={'center'}
+
+          onPress={handleGoBack}
         >
           <IconButton
             height={60}
             width={60}
-            icon={<SignOut color={colors.gray[500]} size={24} />} onPress={handleGoBack} />
-          <Heading color={'gray.100'} textAlign={'center'} fontSize={'lg'} flex={1} ml={-10} >
-            Time Sheet -
-            {title}
-          </Heading>
-        </HStack>
-      </Pressable>
+
+            icon={<SignOut color={colors.gray[300]} size={30} />} onPress={handleGoBack} ml={'10%'} />
+        </Pressable>
+      </HStack>
     </VStack>
   )
 }
