@@ -27,7 +27,9 @@ type ccProps = {
   label: string;
   idcc: string,
   cc: string
-  idpv: string
+  idpv: string,
+  aceitats: string,
+  qthoras: number
 }
 
 type soliProps = {
@@ -156,11 +158,15 @@ export function Home() {
         const cc = item.cc
         const idcc = item.idcc
         const idpv = item.idpv
+        const aceitats = item.aceitats
+        const qthoras = item.qthoras
 
         return {
           cc,
           idcc,
-          idpv
+          idpv,
+          aceitats,
+          qthoras
         }
       })
       setCc(ccData)
@@ -221,8 +227,7 @@ export function Home() {
       })
       setLanca(lanca)
     })
-    // const qtd = calcularQtdHrDiaMes(lanca, tConfig)
-    //console.log('limpou')
+
   }
 
   //filtrando o pv com o usuário logado
@@ -245,8 +250,6 @@ export function Home() {
   });
 
   //filtrando qtd de horas pela solicitação já filtrada
-  //precisa receber como parâmetro o idSoli e também dataLanca como 
-  //string(que é  a variável dataRegFormat na hora de inserir)
   function calcularQtdHrDiaMes(lanca: lancaProps[], tConfig: any, idSoli: number, date: string) {
 
     const configQtDisPJ = tConfig.QtDiaPJ
@@ -276,7 +279,7 @@ export function Home() {
 
     //filtrando por Mês 
     const lancaFilteredMes = lanca.filter(item => {
-      if (item.rlIdSoli == 21) {
+      if (item.rlIdSoli == idSoli) {
         return true
       }
       return false
@@ -320,7 +323,8 @@ export function Home() {
     const [ano, mes, dia] = dataRegistro.split('-')
     const diaReg = dia.substring(0, 2)
     const dataRegFormat = `${diaReg}/${mes}/${ano}`
-    console.log(dataRegFormat)
+
+
     const filteredSoli = soli.filter(item => {
 
       if (pvSel !== '' && ccSel !== '') {
@@ -336,6 +340,7 @@ export function Home() {
       case pvSel === '':
         return alert('PV não Informado, escolha um PV')
       case ccSel === '':
+
         return alert('Centro de Custo não Informado, escolha um Centro de Custo')
 
       case date === '':
@@ -381,33 +386,44 @@ export function Home() {
     //executa função para calcular lançamentos existentes
     const qtd = calcularQtdHrDiaMes(lanca, tConfig, filteredSoli[0].idSoli, date)
 
+    const qtdHorasCCFiltered = filteredCc.filter(item => {
+      if (item.idcc === ccSel) {
+        const minutos = item.qthoras * 60
+        return minutos
+      }
+    })
+
+    const qtdHorasMinutosCCFiltered = qtdHorasCCFiltered[0].qthoras * 60
+
 
     //verificar se hora infomada + limite hora por dia é menor que o limite do dia 
     if (qtdHoraInfo + qtd.qtdDia < qtdLimInt) {
       setIsLoading(true)
-      //criando um novo lançamento
-      api.post(`/Ftimesheet-create.rule?action=open&sys=MOB&fld_dt_tlanca=${dataRegFormat}&fld_dt_tlancarg=${date}&fld_ds_tlancatp=1&fld_rl_tsoli=${filteredSoli[0].idSoli}&fld_hh_tlancahora=${time}`).then(() => {
-        setCcSel('')
-        setPvSel('')
-        setDate('')
-        setTime('')
-        Alert.alert('Apontamento Registrado com Sucesso!')
-        setIsLoading(false)
-      }).catch((error) => {
-        setIsLoading(false)
-        throw new Error('Erro Não foi possível registrar Apontamento')
-      })
+      if (qtd.qtdMes + qtdHoraInfo < qtdHorasMinutosCCFiltered) {
 
+        setIsLoading(true)
+        //criando um novo lançamento
+        api.post(`/Ftimesheet-create.rule?action=open&sys=MOB&fld_dt_tlanca=${dataRegFormat}&fld_dt_tlancarg=${date}&fld_ds_tlancatp=1&fld_rl_tsoli=${filteredSoli[0].idSoli}&fld_hh_tlancahora=${time}`).then(() => {
+          setCcSel('')
+          setPvSel('')
+          setDate('')
+          setTime('')
+          Alert.alert('Apontamento Registrado com Sucesso!')
+          setIsLoading(false)
+        }).catch((error) => {
+          setIsLoading(false)
+          throw new Error('Erro Não foi possível registrar Apontamento')
+        })
+      } else {
+        setIsLoading(false)
+        Alert.alert('Não é possível realizar apontamento', 'Qtd de Horas por Centro de custo foi Excedido.')
+      }
 
 
     } else {
       setIsLoading(false)
-      Alert.alert('Não é possível realizar apontamento nesse dia', 'Qtd de Horas por dia Excedido.')
+      Alert.alert('Não é possível realizar apontamento nesse dia', 'Qtd de Horas por dia foi Excedido.')
     }
-
-
-
-
 
   }
 
@@ -531,7 +547,7 @@ export function Home() {
             bgColor={colors.purple[300]}
             _pressed={{ bg: colors.purple[100] }}
             onPress={handleRegister}
-
+            disabled={isLoading}
           >
             {isLoading ? <Loading color={colors.white} bgColor={colors.purple[300]} /> : <Text style={{ fontSize: 20, color: 'white' }} >Registrar</Text>}
           </Button>
