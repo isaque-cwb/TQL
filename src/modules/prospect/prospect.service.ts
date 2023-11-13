@@ -18,7 +18,7 @@ export class ProspectService {
     case when fld_seq_colaborpj is null then fld_colabo_seq else fld_seq_colaborpj end as "idColabora",
     case when fld_ds_colaborpjnm is null then fld_ds_colabonm else fld_ds_colaborpjnm end as "Colaborador",
     case when fld_ds_colaborpjmat is null then fld_ds_colabomat else fld_ds_colaborpjmat end as "Matrícula",
-    case when fld_ds_colaborpjmat is null then 'CLT' else 'PJ' end as "CLT/PJ",
+    case when fld_ds_colaborpjmat is null then 'CLT' else 'PJ' end as "CLTPJ",
     usr_codigo as "idUsuario"
     from tab_88_tsoli
     inner join tab_06_prospect on fld_prospec_seq = fld_rl_prospect

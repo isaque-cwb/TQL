@@ -47,6 +47,9 @@ export class TimeSheetService {
     const minutos = partesHora[1]
     qtdHoras.setHours(horas)
     qtdHoras.setMinutes(minutos)
+    qtdHoras.setSeconds(0)
+    qtdHoras.setMilliseconds(0)
+    
 
 
     const rlSoli = parseInt(createTimeSheetDto.fld_rl_tsoli)
